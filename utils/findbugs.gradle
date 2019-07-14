@@ -1,0 +1,8 @@
+apply plugin: 'com.chaitanyapramod.findbugs-android'
+
+findbugs {
+    toolVersion '3.0.1'
+    ignoreFailures false
+    effort 'max'
+    reportLevel 'high'
+}

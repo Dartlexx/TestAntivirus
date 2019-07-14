@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<ruleset name="Android Application Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://pmd.sf.net/ruleset/2.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd'
+         xsi:noNamespaceSchemaLocation='http://pmd.sf.net/ruleset_xml_schema.xsd'>
+
+    <exclude-pattern>.*/R.java</exclude-pattern>
+    <exclude-pattern>.*/bindings/.*Bindings.java</exclude-pattern>
+    <exclude-pattern>.*/ApplicationModule.java</exclude-pattern>
+    <exclude-pattern>.*/BR.*</exclude-pattern>
+    <exclude-pattern>.*/gen/.*</exclude-pattern>
+
+    <rule ref="rulesets/java/android.xml" />
+    
+    <rule ref="rulesets/java/basic.xml" />
+    
+    <rule ref="rulesets/java/braces.xml" />
+
+    <rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength">
+      <properties>
+          <property name="minimum" value="200"/>
+      </properties>
+    </rule>
+
+    <rule ref="rulesets/java/coupling.xml">
+        <!-- 6455 warnings -->
+        <exclude name="LawOfDemeter" /> 
+        
+        <!-- 33 warnings. Не учитывается что реализация использует специфичные для определённого класса методы -->
+        <exclude name="LooseCoupling" />
+
+        <!-- Требует много изменений в коде -->
+        <exclude name="ExcessiveImports" />
+
+        <!-- Требует дополнительной настройки. См. http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/coupling.html#LoosePackageCoupling  -->
+        <exclude name="LoosePackageCoupling" />
+    </rule>
+
+    <rule ref="rulesets/java/design.xml">
+        <!-- 241 warnings. Ложные срабатывания + жалуется на вполне адекватное исопльзование -->
+        <exclude name="ConfusingTernary" />
+
+        <!-- 69 warnings. Сомнительная польза. Жалуется на пустые методы в абстрактных классах и пустые @Override методы -->
+        <exclude name="UncommentedEmptyMethodBody" />
+        
+        <!-- 20 warnings. Сомнительная польза. Жалуется на пустые не private конструкторы -->
+        <exclude name="UncommentedEmptyConstructor" />
+
+        <!-- 83 warnings. Не учитывается что обработаны все возможные значения enum -->
+        <exclude name="SwitchStmtsShouldHaveDefault" /> 
+
+        <!-- Больше относится к code style. -->
+        <exclude name="AvoidSynchronizedAtMethodLevel" />
+
+        <!-- Требует много изменений в коде -->
+        <exclude name="GodClass" />
+
+        <!-- Больше относится к code style -->
+        <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal" />
+        
+        <!-- 27 warnings. Больше относится к code style -->
+        <exclude name="AccessorClassGeneration" />
+
+        <!-- 31 warnings -->
+        <exclude name="ReturnEmptyArrayRatherThanNull" />
+
+        <!-- Под вопросом  -->
+        <exclude name="NonStaticInitializer" />
+
+        <!-- 15 warnings. Жалуется только на Connection. В частности когда получаем его так: mSession.getProxy().getConnection() -->
+        <exclude name="CloseResource" />
+
+        <!-- Больше относится к code style  -->
+        <exclude name="EmptyMethodInAbstractClassShouldBeAbstract" />
+
+        <!-- Судя по реализации, дефолтная локаль, полученная при старте JVM, будет передаваться автоматически  -->
+        <exclude name="SimpleDateFormatNeedsLocale" />
+
+        <!-- Судя по реализации, дефолтная локаль, полученная при старте JVM, будет передаваться автоматически  -->
+        <exclude name="UseLocaleWithCaseConversions" />
+
+        <!-- Больше относится к code style -->
+        <exclude name="TooFewBranchesForASwitchStatement" />
+
+        <!-- 2 warnings. В 2 final классах перезаписывается clone() -->
+        <exclude name="AvoidProtectedMethodInFinalClassNotExtending" />
+
+        <!-- included with a parameter later -->
+        <exclude name="AvoidDeeplyNestedIfStmts" />
+    </rule>
+    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
+      <properties>
+          <property name="problemDepth" value="4"/>
+      </properties>
+    </rule>
+
+    <rule ref="rulesets/java/empty.xml"/>
+
+    <rule ref="rulesets/java/finalizers.xml" />
+    
+    <rule ref="rulesets/java/imports.xml">
+        <exclude name="TooManyStaticImports" />
+    </rule>
+    
+    <rule ref="rulesets/java/junit.xml" />
+    
+    <!-- Больше относится к code style -->
+    <rule ref="rulesets/java/naming.xml">
+        <exclude name="AbstractNaming" />
+        <exclude name="LongVariable" />
+        <exclude name="ShortMethodName" />
+        <exclude name="ShortVariable" />
+        <exclude name="VariableNamingConventions" />
+        <exclude name="SuspiciousConstantFieldName" />
+    </rule>
+  
+    <rule ref="rulesets/java/optimizations.xml">
+        <exclude name="MethodArgumentCouldBeFinal" /> <!-- 6652 warnings -->
+        <exclude name="LocalVariableCouldBeFinal" /> <!-- 2594 warnings -->
+        <exclude name="RedundantFieldInitializer" /> <!-- 114 warnings -->
+        <exclude name="AvoidInstantiatingObjectsInLoops" /> <!-- 56 warnings -->
+        <exclude name="UseArrayListInsteadOfVector" />
+        <exclude name="UseStringBufferForStringAppends" />
+    </rule>
+
+    <rule ref="rulesets/java/strings.xml">
+        <exclude name="AvoidDuplicateLiterals" />
+        <exclude name="AvoidStringBufferField" />
+
+        <!-- Больше относится к code style -->
+        <exclude name="ConsecutiveLiteralAppends" />
+
+        <!-- Ложные срабатывания  -->
+        <exclude name="InsufficientStringBufferDeclaration" />
+    </rule>
+
+    <rule ref="rulesets/java/sunsecure.xml" />
+
+    <rule ref="rulesets/java/unnecessary.xml">
+        <exclude name="UnnecessaryFinalModifier" />
+    </rule>
+</ruleset>

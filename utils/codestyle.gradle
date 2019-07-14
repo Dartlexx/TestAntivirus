@@ -1,0 +1,9 @@
+apply from: "${project.rootDir}/utils/checkstyle.gradle"
+apply from: "${project.rootDir}/utils/findbugs.gradle"
+apply from: "${project.rootDir}/utils/pmd.gradle"
+
+tasks.getByName("check") {
+    dependsOn "checkstyle"
+    dependsOn "findbugsRelease"
+    dependsOn "pmd"
+}

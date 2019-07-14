@@ -1,0 +1,26 @@
+apply plugin: 'pmd'
+
+pmd {
+    toolVersion = '6.16.0'
+}
+
+task pmd(type: Pmd) {
+    description "Analyze code with the PMD tool"
+    group "Verification"
+
+    consoleOutput = true
+    ignoreFailures = false
+    ruleSetFiles = files("$project.rootDir/utils/pmd.xml")
+    ruleSets = []
+    rulePriority = 3
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**', '**/androidTest/**', '**/test/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+//        html.destination="$project.buildDir/pmd/pmd.html"
+    }
+}

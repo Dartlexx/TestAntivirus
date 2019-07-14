@@ -1,0 +1,30 @@
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = "8.21"
+}
+
+task checkstyle(type: Checkstyle) {
+    description 'Run Checkstyle inspection'
+    group = 'Verification'
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/R.java'
+    exclude '**/BuildConfig.java'
+
+    configFile = file("$project.rootDir/utils/checkstyle.xml")
+    configProperties.config_loc = "$project.rootDir/utils/"
+    ignoreFailures = false
+
+    // empty classpath
+    classpath = files()
+
+    showViolations true
+
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
