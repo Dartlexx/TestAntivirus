@@ -10,7 +10,8 @@ ext {
             jUnit                    : '4.12',
 
             androidRunner            : '1.1.1',  // https://developer.android.com/training/testing/junit-runner
-            androidJUnit             : '1.1.0',
+            androidJUnit             : '1.1.1',  // https://mvnrepository.com/artifact/androidx.test/runner
+            androidTest              : '1.1.0',  // https://mvnrepository.com/artifact/androidx.test/core
             robolectric              : '4.2.1',  // https://github.com/robolectric/robolectric/releases
     ]
 
@@ -29,6 +30,7 @@ ext {
 
             androidRunner            : "androidx.test:runner:${versions.androidRunner}",
             androidJUnit             : "androidx.test.ext:junit:${versions.androidJUnit}",
+            androidTestCore          : "androidx.test:core:${versions.androidTest}",
     ]
 
     def impl = "implementation"
@@ -60,6 +62,8 @@ ext {
 
             [configuration: testImpl, dependency: testLibs.junit],
             [configuration: testImpl, dependency: testLibs.mockito],
+            [configuration: testImpl, dependency: testLibs.robolectric],
+            [configuration: testImpl, dependency: testLibs.androidTestCore],
     ]
 
     commonDependencies = [
