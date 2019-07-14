@@ -1,7 +1,7 @@
 ext {
     def versions = [
             appCompat                : '1.0.2',  // https://developer.android.com/jetpack/androidx/releases/appcompat
-            annotations              : '1.0.2',  // https://developer.android.com/jetpack/androidx/releases/annotation
+            annotations              : '1.1.0',  // https://developer.android.com/jetpack/androidx/releases/annotation
             constraint               : '1.1.3',  // https://dl.google.com/dl/android/maven2/com/android/support/constraint/group-index.xml
 
             mockito                  : '2.25.1', // https://mvnrepository.com/artifact/org.mockito/mockito-core
@@ -28,20 +28,25 @@ ext {
     ]
 
     def impl = "implementation"
-    def apt = "apt"
     def testImpl = "testImplementation"
     def androidTestImpl = "androidTestImplementation"
 
     def modules = [
             repository               : ":repository",
-            storage                  : ":storage"
+            storage                  : ":storage",
+            common                   : ":common"
     ]
 
     appDependencies = [
+            [configuration: impl, dependency: libs.annotations],
             [configuration: impl, dependency: libs.appCompat],
             [configuration: impl, dependency: libs.constraintLayout],
 
             [configuration: testImpl, dependency: testLibs.junit],
             [configuration: testImpl, dependency: testLibs.mockito],
+    ]
+
+    commonDependencies = [
+            [configuration: impl, dependency: libs.annotations],
     ]
 }
