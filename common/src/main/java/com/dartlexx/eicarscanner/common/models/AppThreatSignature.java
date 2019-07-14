@@ -2,6 +2,8 @@ package com.dartlexx.eicarscanner.common.models;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public final class AppThreatSignature {
 
     private final long mId;
@@ -38,5 +40,25 @@ public final class AppThreatSignature {
 
     public int getTopVersion() {
         return mTopVersion;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AppThreatSignature that = (AppThreatSignature) o;
+        return mId == that.mId &&
+                mLowVersion == that.mLowVersion &&
+                mTopVersion == that.mTopVersion &&
+                mPackageName.equals(that.mPackageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId, mPackageName, mLowVersion, mTopVersion);
     }
 }

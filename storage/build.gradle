@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply from: "${project.rootDir}/utils/codestyle.gradle"
 
 android {
@@ -14,16 +14,21 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
+
 dependencies {
-    rootProject.ext.appDependencies.each {
+    rootProject.ext.storageDependencies.each {
         add(it.configuration, it.dependency, it.options)
     }
 }
