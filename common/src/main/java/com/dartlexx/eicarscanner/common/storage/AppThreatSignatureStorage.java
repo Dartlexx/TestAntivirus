@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 public interface AppThreatSignatureStorage {
 
     @NonNull
-    List<AppThreatSignature> getSignatures();
+    List<AppThreatSignature> getAppSignatures();
 
-    void updateSignatures(@NonNull List<AppThreatSignature> newSignatures);
+    void updateAppSignatures(@NonNull List<AppThreatSignature> newSignatures);
 }

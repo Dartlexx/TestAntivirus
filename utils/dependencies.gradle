@@ -4,6 +4,8 @@ ext {
             annotations              : '1.1.0',  // https://developer.android.com/jetpack/androidx/releases/annotation
             constraint               : '1.1.3',  // https://dl.google.com/dl/android/maven2/com/android/support/constraint/group-index.xml
 
+            gson                     : '2.8.5', // https://github.com/google/gson
+
             mockito                  : '2.25.1', // https://mvnrepository.com/artifact/org.mockito/mockito-core
             jUnit                    : '4.12',
 
@@ -16,6 +18,8 @@ ext {
             appCompat                : "androidx.appcompat:appcompat:${versions.appCompat}",
             annotations              : "androidx.annotation:annotation:${versions.annotations}",
             constraintLayout         : "androidx.constraintlayout:constraintlayout:${versions.constraint}",
+
+            gson                     : "com.google.code.gson:gson:${versions.gson}",
     ]
 
     def testLibs = [
@@ -41,6 +45,18 @@ ext {
             [configuration: impl, dependency: libs.annotations],
             [configuration: impl, dependency: libs.appCompat],
             [configuration: impl, dependency: libs.constraintLayout],
+
+            [configuration: testImpl, dependency: testLibs.junit],
+            [configuration: testImpl, dependency: testLibs.mockito],
+    ]
+
+    storageDependencies = [
+            [configuration: impl, dependency: project(modules.common)],
+
+            [configuration: impl, dependency: libs.annotations],
+            [configuration: impl, dependency: libs.appCompat],
+
+            [configuration: impl, dependency: libs.gson],
 
             [configuration: testImpl, dependency: testLibs.junit],
             [configuration: testImpl, dependency: testLibs.mockito],

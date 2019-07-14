@@ -2,8 +2,8 @@ apply plugin: 'java-library'
 apply from: "${project.rootDir}/utils/checkstyle.gradle"
 apply from: "${project.rootDir}/utils/pmd.gradle"
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
 
 dependencies {
     rootProject.ext.commonDependencies.each {

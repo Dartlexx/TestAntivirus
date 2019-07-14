@@ -12,6 +12,16 @@ buildscript {
     }
 }
 
+ext {
+    compileSdkVersion = 28
+    minSdkVersion = 24
+    targetSdkVersion = 28
+    javaVersion = JavaVersion.VERSION_1_8
+
+    moduleVersion = 1
+    moduleVersionName = "0.1.0"
+}
+
 allprojects {
     repositories {
         google()
