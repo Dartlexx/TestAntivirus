@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+apply from: "${project.rootDir}/utils/checkstyle.gradle"
+apply from: "${project.rootDir}/utils/pmd.gradle"
+
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
+
+dependencies {
+    rootProject.ext.repositoryDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}

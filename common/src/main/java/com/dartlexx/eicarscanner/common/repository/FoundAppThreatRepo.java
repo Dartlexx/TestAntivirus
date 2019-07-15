@@ -9,7 +9,7 @@ import java.util.List;
 public interface FoundAppThreatRepo {
 
     @NonNull
-    List<AppThreatInfo> getFoundThreats();
+    List<AppThreatInfo> getAppThreats();
 
-    void updateFoundThreats(@NonNull List<AppThreatInfo> foundThreats);
+    void updateAppThreats(@NonNull List<AppThreatInfo> foundThreats);
 }
