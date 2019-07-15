@@ -52,6 +52,12 @@ ext {
             [configuration: testImpl, dependency: testLibs.mockito],
     ]
 
+    repositoryDependencies = [
+            [configuration: impl, dependency: project(modules.common)],
+
+            [configuration: impl, dependency: libs.annotations],
+    ]
+
     storageDependencies = [
             [configuration: impl, dependency: project(modules.common)],
 

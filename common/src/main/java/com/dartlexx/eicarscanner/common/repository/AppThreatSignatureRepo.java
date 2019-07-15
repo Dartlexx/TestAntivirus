@@ -6,10 +6,10 @@ import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 
 import java.util.List;
 
-public interface AppThreatSinatureRepo {
+public interface AppThreatSignatureRepo {
 
     @NonNull
-    List<AppThreatSignature> getSignatures();
+    List<AppThreatSignature> getAppSignatures();
 
-    void updateSignatures(@NonNull List<AppThreatSignature> newSignatures);
+    void updateAppSignatures(@NonNull List<AppThreatSignature> newSignatures);
 }
