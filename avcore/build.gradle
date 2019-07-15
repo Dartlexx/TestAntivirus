@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+apply from: "${project.rootDir}/utils/codestyle.gradle"
+
+android {
+    def ext = rootProject.ext
+
+    compileSdkVersion ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion ext.minSdkVersion
+        targetSdkVersion ext.targetSdkVersion
+        versionCode ext.moduleVersion
+        versionName ext.moduleVersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
+
+dependencies {
+    rootProject.ext.avCoreDependencies.each {
+        add(it.configuration, it.dependency, it.options)
+    }
+}
