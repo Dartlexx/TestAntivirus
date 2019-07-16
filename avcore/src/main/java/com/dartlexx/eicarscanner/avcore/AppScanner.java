@@ -59,7 +59,7 @@ final class AppScanner {
             // Emulate long check
             try {
                 Thread.sleep(50);
-            } catch (Exception ignored) {
+            } catch (InterruptedException ignored) {
             }
 
             ApplicationInfo app = appsList.get(i);

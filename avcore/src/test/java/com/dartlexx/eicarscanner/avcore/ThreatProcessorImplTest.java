@@ -81,5 +81,5 @@ public class ThreatProcessorImplTest {
         assertEquals(3, updated.size());
         assertTrue(updated.containsAll(EXISTING_THREATS));
         assertTrue(updated.contains(threat));
-}
+    }
 }
