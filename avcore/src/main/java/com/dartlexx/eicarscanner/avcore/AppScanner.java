@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner.antiviruscore;
+package com.dartlexx.eicarscanner.avcore;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -29,7 +29,7 @@ final class AppScanner {
     private final AppThreatSignatureRepo mSignatureRepo;
 
     @Nullable
-    private volatile ThreatFoundListener mListener;
+    private volatile ThreatProcessor mListener;
 
     AppScanner(@NonNull PackageManager packageManager,
                @NonNull AppThreatSignatureRepo repo) {
@@ -37,30 +37,44 @@ final class AppScanner {
         mSignatureRepo = repo;
     }
 
-    synchronized void setThreatListener(@Nullable ThreatFoundListener listener) {
+    synchronized void setThreatListener(@Nullable ThreatProcessor listener) {
         mListener = listener;
     }
 
-    void scanInstalledApps() {
+    void scanInstalledApps(@NonNull Boolean stopScan) {
         final List<ApplicationInfo> appsList = mPackageMan.getInstalledApplications(GET_INSTALLED_APPS_FLAGS);
         final Map<String, AppThreatSignature> signatures = toMap(mSignatureRepo.getAppSignatures());
 
-        for (ApplicationInfo app : appsList) {
+        updateProgress(0);
+        for (int i = 0; i < appsList.size(); i++) {
+            if (stopScan) {
+                break;
+            }
+
+            ApplicationInfo app = appsList.get(i);
             AppThreatSignature match = signatures.get(app.packageName);
             if (match != null) {
                 checkSingleApp(app, match);
             }
+            updateProgress(i * 100 / appsList.size());
         }
+        updateProgress(100);
     }
 
-    void checkNewOrUpdateApp(@NonNull ApplicationInfo app) {
+    void checkNewOrUpdatedApp(@NonNull ApplicationInfo app, @NonNull Boolean stopScan) {
         final List<AppThreatSignature> signaturesList = mSignatureRepo.getAppSignatures();
 
+        updateProgress(0);
         for (AppThreatSignature signature : signaturesList) {
+            if (stopScan) {
+                break;
+            }
+
             if (Objects.equals(signature.getPackageName(), app.packageName)) {
                 checkSingleApp(app, signature);
             }
         }
+        updateProgress(100);
     }
 
     private void checkSingleApp(@NonNull ApplicationInfo app,
@@ -88,6 +102,13 @@ final class AppScanner {
         if (mListener != null) {
             //noinspection ConstantConditions
             mListener.onAppThreatFound(signature, app, version);
+        }
+    }
+
+    private synchronized void updateProgress(int progress) {
+        if (mListener != null) {
+            //noinspection ConstantConditions
+            mListener.onAppScanProgressUpdated(progress);
         }
     }
 

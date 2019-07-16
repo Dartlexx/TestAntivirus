@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner.antiviruscore;
+package com.dartlexx.eicarscanner.avcore;
 
 import org.junit.Test;
 

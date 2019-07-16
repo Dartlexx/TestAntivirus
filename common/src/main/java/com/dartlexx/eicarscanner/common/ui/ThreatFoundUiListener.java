@@ -5,4 +5,6 @@ import androidx.annotation.NonNull;
 public interface ThreatFoundUiListener {
 
     void onAppThreatFound(@NonNull String appName, @NonNull String packageName);
+
+    void onAppScanProgressUpdated(int progress);
 }

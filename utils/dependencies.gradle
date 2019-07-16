@@ -45,6 +45,11 @@ ext {
     ]
 
     appDependencies = [
+            [configuration: impl, dependency: project(modules.common)],
+            [configuration: impl, dependency: project(modules.repository)],
+            [configuration: impl, dependency: project(modules.storage)],
+            [configuration: impl, dependency: project(modules.avcore)],
+
             [configuration: impl, dependency: libs.annotations],
             [configuration: impl, dependency: libs.appCompat],
             [configuration: impl, dependency: libs.constraintLayout],

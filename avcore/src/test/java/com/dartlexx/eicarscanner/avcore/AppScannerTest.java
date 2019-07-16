@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner.antiviruscore;
+package com.dartlexx.eicarscanner.avcore;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -52,7 +52,7 @@ public class AppScannerTest {
         APPS_LIST_NO_THREATS.add(app1);
     }
 
-    private final ThreatFoundListener mListener = mock(ThreatFoundListener.class);
+    private final ThreatProcessor mListener = mock(ThreatProcessor.class);
     private final AppThreatSignatureRepo mRepo = mock(AppThreatSignatureRepo.class);
     private final PackageManager mPackMan = mock(PackageManager.class);
     private AppScanner mAppScanner;
@@ -150,7 +150,7 @@ public class AppScannerTest {
         packageInfo.versionCode = 13;
         doReturn(packageInfo).when(mPackMan).getPackageInfo(eq("com.test.virus"), anyInt());
 
-        mAppScanner.checkNewOrUpdateApp(updatedApp);
+        mAppScanner.checkNewOrUpdatedApp(updatedApp);
 
         verify(mRepo).getAppSignatures();
         verify(mPackMan, never()).getInstalledApplications(anyInt());
