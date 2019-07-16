@@ -1,6 +1,5 @@
 package com.dartlexx.eicarscanner;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,25 +9,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dartlexx.eicarscanner.avcore.AvCoreServiceProvider;
 import com.dartlexx.eicarscanner.avcore.AvDispatcher;
-import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
-import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
-import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
-import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.ui.ThreatFoundUiListener;
-import com.dartlexx.eicarscanner.repository.RepositoryServiceProvider;
-import com.dartlexx.eicarscanner.storage.StorageServiceProvider;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.dartlexx.eicarscanner.di.AppComponent;
 
 public class MainActivity extends AppCompatActivity implements ThreatFoundUiListener {
-
-    private final StorageServiceProvider mStorageProvider = new StorageServiceProvider();
-    private final RepositoryServiceProvider mRepoProvider = new RepositoryServiceProvider();
-    private final AvCoreServiceProvider mAvCoreProvider = new AvCoreServiceProvider();
 
     private ProgressBar mProgressBar;
 
@@ -54,13 +39,6 @@ public class MainActivity extends AppCompatActivity implements ThreatFoundUiList
                 getAvDispatcher().stopAppsScan();
             }
         });
-
-        List<AppThreatSignature> signatures = new ArrayList<>(2);
-        signatures.add(new AppThreatSignature(1, "com.zoner.android.eicar"));
-        signatures.add(new AppThreatSignature(2, "com.fsecure.eicar.antivirus.test"));
-
-        AppThreatSignatureStorage storage = mStorageProvider.getAppSignatureStorage(getApplicationContext());
-        storage.updateAppSignatures(signatures);
     }
 
     @Override
@@ -86,17 +64,7 @@ public class MainActivity extends AppCompatActivity implements ThreatFoundUiList
     }
 
     private AvDispatcher getAvDispatcher() {
-        Context appContext = getApplicationContext();
-        AppThreatSignatureStorage appSignStorage = mStorageProvider.getAppSignatureStorage(appContext);
-        FoundAppThreatStorage appThreatStorage = mStorageProvider.getAppThreatStorage(appContext);
-
-        AppThreatSignatureRepo appSignRepo = mRepoProvider.getAppSignatureRepo(appSignStorage);
-        FoundAppThreatRepo appThreatRepo = mRepoProvider.getAppThreatRepo(appThreatStorage);
-
-        return mAvCoreProvider.getAvDispatcher(
-                appContext.getPackageManager(),
-                appSignRepo,
-                appThreatRepo,
-                this);
+        AppComponent appComponent = ((App) getApplication()).getAppComponent();
+        return appComponent.getAvDispatcher(this);
     }
 }
