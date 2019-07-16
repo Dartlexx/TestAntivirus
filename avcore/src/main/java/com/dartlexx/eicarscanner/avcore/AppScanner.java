@@ -31,6 +31,8 @@ final class AppScanner {
     @Nullable
     private volatile ThreatProcessor mListener;
 
+    private volatile boolean mStopAppScan;
+
     AppScanner(@NonNull PackageManager packageManager,
                @NonNull AppThreatSignatureRepo repo) {
         mPackageMan = packageManager;
@@ -41,14 +43,22 @@ final class AppScanner {
         mListener = listener;
     }
 
-    void scanInstalledApps(@NonNull Boolean stopScan) {
+    void scanInstalledApps() {
+        mStopAppScan = false;
+
         final List<ApplicationInfo> appsList = mPackageMan.getInstalledApplications(GET_INSTALLED_APPS_FLAGS);
         final Map<String, AppThreatSignature> signatures = toMap(mSignatureRepo.getAppSignatures());
 
         updateProgress(0);
         for (int i = 0; i < appsList.size(); i++) {
-            if (stopScan) {
+            if (mStopAppScan) {
                 break;
+            }
+
+            // Emulate long check
+            try {
+                Thread.sleep(50);
+            } catch (Exception ignored) {
             }
 
             ApplicationInfo app = appsList.get(i);
@@ -61,12 +71,13 @@ final class AppScanner {
         updateProgress(100);
     }
 
-    void checkNewOrUpdatedApp(@NonNull ApplicationInfo app, @NonNull Boolean stopScan) {
+    void checkNewOrUpdatedApp(@NonNull ApplicationInfo app) {
+        mStopAppScan = false;
         final List<AppThreatSignature> signaturesList = mSignatureRepo.getAppSignatures();
 
         updateProgress(0);
         for (AppThreatSignature signature : signaturesList) {
-            if (stopScan) {
+            if (mStopAppScan) {
                 break;
             }
 
@@ -75,6 +86,10 @@ final class AppScanner {
             }
         }
         updateProgress(100);
+    }
+
+    void stopScan() {
+        mStopAppScan = true;
     }
 
     private void checkSingleApp(@NonNull ApplicationInfo app,
