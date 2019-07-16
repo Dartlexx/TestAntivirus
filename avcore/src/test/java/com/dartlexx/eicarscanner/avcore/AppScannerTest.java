@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 
@@ -17,7 +18,9 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -77,7 +80,8 @@ public class AppScannerTest {
 
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
-        verifyZeroInteractions(mListener);
+        verify(mListener, never()).onAppThreatFound(any(AppThreatInfo.class));
+        verify(mListener, atLeastOnce()).onAppScanProgressUpdated(anyInt());
     }
 
     @Test
@@ -92,7 +96,10 @@ public class AppScannerTest {
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-        verify(mListener).onAppThreatFound(SIGNATURE_LIST.get(1), APPS_LIST_WITH_THREAT.get(1), 77);
+
+        AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(1),
+                APPS_LIST_WITH_THREAT.get(1).packageName, 77);
+        verify(mListener).onAppThreatFound(expected);
     }
 
     @Test
@@ -107,7 +114,8 @@ public class AppScannerTest {
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-        verifyZeroInteractions(mListener);
+        verify(mListener, never()).onAppThreatFound(any(AppThreatInfo.class));
+        verify(mListener, atLeastOnce()).onAppScanProgressUpdated(100);
     }
 
     @Test
@@ -121,7 +129,10 @@ public class AppScannerTest {
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-        verify(mListener).onAppThreatFound(SIGNATURE_LIST.get(1), APPS_LIST_WITH_THREAT.get(1), 99);
+
+        AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(1),
+                APPS_LIST_WITH_THREAT.get(1).packageName, 99);
+        verify(mListener).onAppThreatFound(expected);
     }
 
     @Test
@@ -155,6 +166,8 @@ public class AppScannerTest {
         verify(mRepo).getAppSignatures();
         verify(mPackMan, never()).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("com.test.virus"), anyInt());
-        verify(mListener).onAppThreatFound(SIGNATURE_LIST.get(0), updatedApp, 13);
+
+        AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(0), updatedApp.packageName, 13);
+        verify(mListener).onAppThreatFound(expected);
     }
 }

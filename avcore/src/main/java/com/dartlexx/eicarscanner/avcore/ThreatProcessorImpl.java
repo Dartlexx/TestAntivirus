@@ -1,11 +1,8 @@
 package com.dartlexx.eicarscanner.avcore;
 
-import android.content.pm.ApplicationInfo;
-
 import androidx.annotation.NonNull;
 
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
-import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
 import com.dartlexx.eicarscanner.common.ui.ThreatFoundUiListener;
 
@@ -28,20 +25,18 @@ final class ThreatProcessorImpl implements ThreatProcessor {
     }
 
     @Override
-    public void onAppThreatFound(@NonNull AppThreatSignature signature,
-                                 @NonNull ApplicationInfo appInfo,
-                                 int version) {
+    public void onAppThreatFound(@NonNull AppThreatInfo foundThreat) {
         final List<AppThreatInfo> knownThreats = new ArrayList<>(mAppThreatRepo.getAppThreats());
         for (AppThreatInfo threat : knownThreats) {
-            if (Objects.equals(threat.getPackageName(), appInfo.packageName)) {
+            if (Objects.equals(threat.getPackageName(), foundThreat.getPackageName())) {
                 return;
             }
         }
 
-        knownThreats.add(new AppThreatInfo(signature, appInfo.name, version));
+        knownThreats.add(foundThreat);
         mAppThreatRepo.updateAppThreats(knownThreats);
 
-        mUiListener.onAppThreatFound(appInfo.name, appInfo.packageName);
+        mUiListener.onAppThreatFound(foundThreat.getAppName(), foundThreat.getPackageName());
     }
 
     @Override

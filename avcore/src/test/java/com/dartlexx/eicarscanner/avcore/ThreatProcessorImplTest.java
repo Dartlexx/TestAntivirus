@@ -1,7 +1,5 @@
 package com.dartlexx.eicarscanner.avcore;
 
-import android.content.pm.ApplicationInfo;
-
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
@@ -59,11 +57,9 @@ public class ThreatProcessorImplTest {
     @Test
     public void whenKnownThreatIsFoundThenListenerIsNotInvoked() throws Exception {
         AppThreatSignature signature = new AppThreatSignature(2, "eicar.virus");
-        ApplicationInfo appInfo = new ApplicationInfo();
-        appInfo.packageName = "eicar.virus";
-        appInfo.name = "EicarVirus-2";
+        AppThreatInfo threat = new AppThreatInfo(signature, "EicarVirus-2", 43);
 
-        mProcessor.onAppThreatFound(signature, appInfo, 43);
+        mProcessor.onAppThreatFound(threat);
 
         verify(mRepo).getAppThreats();
         verify(mRepo, never()).updateAppThreats(ArgumentMatchers.<AppThreatInfo>anyList());
@@ -73,11 +69,9 @@ public class ThreatProcessorImplTest {
     @Test
     public void whenNewThreatIsFoundThenListenerIsInvokedAndBaseUpdated() throws Exception {
         AppThreatSignature signature = new AppThreatSignature(77, "new.threat");
-        ApplicationInfo appInfo = new ApplicationInfo();
-        appInfo.packageName = "new.threat";
-        appInfo.name = "New threat";
+        AppThreatInfo threat = new AppThreatInfo(signature, "New threat", 15);
 
-        mProcessor.onAppThreatFound(signature, appInfo, 15);
+        mProcessor.onAppThreatFound(threat);
 
         verify(mRepo).getAppThreats();
         verify(mRepo).updateAppThreats(mCaptor.capture());
@@ -86,6 +80,6 @@ public class ThreatProcessorImplTest {
         List<AppThreatInfo> updated = mCaptor.getValue();
         assertEquals(3, updated.size());
         assertTrue(updated.containsAll(EXISTING_THREATS));
-        assertTrue(updated.contains(new AppThreatInfo(signature, "New threat", 15)));
+        assertTrue(updated.contains(threat));
     }
 }
