@@ -4,6 +4,8 @@ import android.content.pm.ApplicationInfo;
 
 import androidx.annotation.NonNull;
 
+import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,20 +21,21 @@ public final class AvDispatcher {
         mExecutor = Executors.newSingleThreadExecutor();
     }
 
-    public synchronized void scanInstalledApps() {
+    public synchronized void scanInstalledApps(@NonNull final ScanStateListener listener) {
         mExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                mAppScanner.scanInstalledApps();
+                mAppScanner.scanInstalledApps(listener);
             }
         });
     }
 
-    public synchronized void scanSingleApp(@NonNull final ApplicationInfo info) {
+    public synchronized void scanSingleApp(@NonNull final ApplicationInfo info,
+                                           @NonNull final ScanStateListener listener) {
         mExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                mAppScanner.checkNewOrUpdatedApp(info);
+                mAppScanner.checkNewOrUpdatedApp(info, listener);
             }
         });
     }

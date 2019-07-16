@@ -4,11 +4,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,6 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 24)
@@ -55,33 +54,31 @@ public class AppScannerTest {
         APPS_LIST_NO_THREATS.add(app1);
     }
 
-    private final ThreatProcessor mListener = mock(ThreatProcessor.class);
+    private final ThreatProcessor mProcessor = mock(ThreatProcessor.class);
     private final AppThreatSignatureRepo mRepo = mock(AppThreatSignatureRepo.class);
     private final PackageManager mPackMan = mock(PackageManager.class);
+    private final ScanStateListener mListener = mock(ScanStateListener.class);
     private AppScanner mAppScanner;
 
     @Before
     public void setUp() throws Exception {
-        mAppScanner = new AppScanner(mPackMan, mRepo);
-        mAppScanner.setThreatListener(mListener);
+        mAppScanner = new AppScanner(mPackMan, mRepo, mProcessor);
         doReturn(SIGNATURE_LIST).when(mRepo).getAppSignatures();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        mAppScanner.setThreatListener(null);
     }
 
     @Test
     public void whenThereAreNoThreatsThenListenerIsNotInvoked() throws Exception {
         doReturn(APPS_LIST_NO_THREATS).when(mPackMan).getInstalledApplications(anyInt());
 
-        mAppScanner.scanInstalledApps();
+        mAppScanner.scanInstalledApps(mListener);
 
+        verify(mListener).onScanStarted(false);
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
-        verify(mListener, never()).onAppThreatFound(any(AppThreatInfo.class));
-        verify(mListener, atLeastOnce()).onAppScanProgressUpdated(anyInt());
+        verify(mProcessor, never()).onAppThreatFound(any(AppThreatInfo.class));
+
+        verify(mListener, atLeastOnce()).onScanProgressChanged(anyInt());
+        verify(mListener).onScanFinished();
     }
 
     @Test
@@ -91,15 +88,19 @@ public class AppScannerTest {
         packageInfo.versionCode = 77;
         doReturn(packageInfo).when(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
 
-        mAppScanner.scanInstalledApps();
+        mAppScanner.scanInstalledApps(mListener);
 
+        verify(mListener).onScanStarted(false);
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
 
         AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(1),
                 APPS_LIST_WITH_THREAT.get(1).packageName, 77);
-        verify(mListener).onAppThreatFound(expected);
+        verify(mProcessor).onAppThreatFound(expected);
+
+        verify(mListener, atLeastOnce()).onScanProgressChanged(anyInt());
+        verify(mListener).onScanFinished();
     }
 
     @Test
@@ -109,13 +110,16 @@ public class AppScannerTest {
         packageInfo.versionCode = 1;
         doReturn(packageInfo).when(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
 
-        mAppScanner.scanInstalledApps();
+        mAppScanner.scanInstalledApps(mListener);
 
+        verify(mListener).onScanStarted(false);
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-        verify(mListener, never()).onAppThreatFound(any(AppThreatInfo.class));
-        verify(mListener, atLeastOnce()).onAppScanProgressUpdated(100);
+        verify(mProcessor, never()).onAppThreatFound(any(AppThreatInfo.class));
+
+        verify(mListener, atLeastOnce()).onScanProgressChanged(anyInt());
+        verify(mListener).onScanFinished();
     }
 
     @Test
@@ -124,32 +128,19 @@ public class AppScannerTest {
         doThrow(new PackageManager.NameNotFoundException()).when(mPackMan)
                 .getPackageInfo(eq("org.virus.eicar"), anyInt());
 
-        mAppScanner.scanInstalledApps();
+        mAppScanner.scanInstalledApps(mListener);
 
+        verify(mListener).onScanStarted(false);
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
 
         AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(1),
                 APPS_LIST_WITH_THREAT.get(1).packageName, 99);
-        verify(mListener).onAppThreatFound(expected);
-    }
+        verify(mProcessor).onAppThreatFound(expected);
 
-    @Test
-    public void whenListenerIsUnregisteredThenOldListenerIsNotInvoked() throws Exception {
-        mAppScanner.setThreatListener(null);
-
-        doReturn(APPS_LIST_WITH_THREAT).when(mPackMan).getInstalledApplications(anyInt());
-        PackageInfo packageInfo = new PackageInfo();
-        packageInfo.versionCode = 77;
-        doReturn(packageInfo).when(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-
-        mAppScanner.scanInstalledApps();
-
-        verify(mRepo).getAppSignatures();
-        verify(mPackMan).getInstalledApplications(anyInt());
-        verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
-        verifyZeroInteractions(mListener);
+        verify(mListener, atLeastOnce()).onScanProgressChanged(anyInt());
+        verify(mListener).onScanFinished();
     }
 
     @Test
@@ -161,13 +152,17 @@ public class AppScannerTest {
         packageInfo.versionCode = 13;
         doReturn(packageInfo).when(mPackMan).getPackageInfo(eq("com.test.virus"), anyInt());
 
-        mAppScanner.checkNewOrUpdatedApp(updatedApp);
+        mAppScanner.checkNewOrUpdatedApp(updatedApp, mListener);
 
+        verify(mListener).onScanStarted(true);
         verify(mRepo).getAppSignatures();
         verify(mPackMan, never()).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("com.test.virus"), anyInt());
 
         AppThreatInfo expected = new AppThreatInfo(SIGNATURE_LIST.get(0), updatedApp.packageName, 13);
-        verify(mListener).onAppThreatFound(expected);
+        verify(mProcessor).onAppThreatFound(expected);
+
+        verify(mListener, atLeastOnce()).onScanProgressChanged(anyInt());
+        verify(mListener).onScanFinished();
     }
 }

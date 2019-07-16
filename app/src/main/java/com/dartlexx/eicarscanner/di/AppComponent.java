@@ -12,9 +12,10 @@ import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
 import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
-import com.dartlexx.eicarscanner.common.ui.ThreatFoundUiListener;
+import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 import com.dartlexx.eicarscanner.repository.RepositoryServiceProvider;
 import com.dartlexx.eicarscanner.storage.StorageServiceProvider;
+import com.dartlexx.eicarscanner.ui.ThreatFoundListenerImpl;
 
 public final class AppComponent {
 
@@ -30,6 +31,9 @@ public final class AppComponent {
     @Nullable
     private AvCoreServiceProvider mAvCoreService;
 
+    @Nullable
+    private ThreatFoundListener mThreatFoundListener;
+
     public AppComponent(@NonNull Context appContext) {
         mAppContext = appContext;
     }
@@ -41,18 +45,27 @@ public final class AppComponent {
     }
 
     @NonNull
-    public FoundAppThreatRepo getFoundAppThreatRepo() {
+    public AvDispatcher getAvDispatcher() {
+        PackageManager packageManager = mAppContext.getPackageManager();
+        AppThreatSignatureRepo signatureRepo = getAppThreatSignaturesRepo();
+        FoundAppThreatRepo threatRepo = getFoundAppThreatRepo();
+        ThreatFoundListener listener = getThreatFoundListeer();
+
+        return getAvCoreService().getAvDispatcher(packageManager, signatureRepo, threatRepo, listener);
+    }
+
+    @NonNull
+    private FoundAppThreatRepo getFoundAppThreatRepo() {
         FoundAppThreatStorage storage = getStorageService().getAppThreatStorage(mAppContext);
         return getRepoService().getAppThreatRepo(storage);
     }
 
     @NonNull
-    public AvDispatcher getAvDispatcher(ThreatFoundUiListener listener) {
-        PackageManager packageManager = mAppContext.getPackageManager();
-        AppThreatSignatureRepo signatureRepo = getAppThreatSignaturesRepo();
-        FoundAppThreatRepo threatRepo = getFoundAppThreatRepo();
-
-        return getAvCoreService().getAvDispatcher(packageManager, signatureRepo, threatRepo, listener);
+    private ThreatFoundListener getThreatFoundListeer() {
+        if (mThreatFoundListener == null) {
+            mThreatFoundListener = new ThreatFoundListenerImpl(mAppContext);
+        }
+        return mThreatFoundListener;
     }
 
     @NonNull

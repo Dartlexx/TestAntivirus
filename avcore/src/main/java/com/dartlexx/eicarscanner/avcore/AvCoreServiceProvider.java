@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
-import com.dartlexx.eicarscanner.common.ui.ThreatFoundUiListener;
+import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 
 public final class AvCoreServiceProvider {
 
@@ -24,7 +24,7 @@ public final class AvCoreServiceProvider {
     public AvDispatcher getAvDispatcher(@NonNull PackageManager packageManager,
                                         @NonNull AppThreatSignatureRepo signatureRepo,
                                         @NonNull FoundAppThreatRepo threatRepo,
-                                        @NonNull ThreatFoundUiListener listener) {
+                                        @NonNull ThreatFoundListener listener) {
         if (mDispatcher == null) {
             ThreatProcessor processor = getThreatProcessor(threatRepo, listener);
             AppScanner scanner = getAppScanner(packageManager, signatureRepo, processor);
@@ -38,17 +38,16 @@ public final class AvCoreServiceProvider {
                                      @NonNull AppThreatSignatureRepo repo,
                                      @NonNull ThreatProcessor processor) {
         if (mAppScanner == null) {
-            mAppScanner = new AppScanner(packageManager, repo);
-            mAppScanner.setThreatListener(processor);
+            mAppScanner = new AppScanner(packageManager, repo, processor);
         }
         return mAppScanner;
     }
 
     @NonNull
     private ThreatProcessor getThreatProcessor(@NonNull FoundAppThreatRepo repo,
-                                               @NonNull ThreatFoundUiListener listener) {
+                                               @NonNull ThreatFoundListener listener) {
         if (mThreatProcessor == null) {
-            mThreatProcessor = new ThreatProcessorImpl(repo, listener);
+            mThreatProcessor = new ThreatProcessor(repo, listener);
         }
         return mThreatProcessor;
     }
