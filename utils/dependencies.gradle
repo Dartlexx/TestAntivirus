@@ -38,18 +38,37 @@ ext {
     def androidTestImpl = "androidTestImplementation"
 
     def modules = [
+            avcore                   : ":avcore",
             repository               : ":repository",
             storage                  : ":storage",
             common                   : ":common"
     ]
 
     appDependencies = [
+            [configuration: impl, dependency: project(modules.common)],
+            [configuration: impl, dependency: project(modules.repository)],
+            [configuration: impl, dependency: project(modules.storage)],
+            [configuration: impl, dependency: project(modules.avcore)],
+
             [configuration: impl, dependency: libs.annotations],
             [configuration: impl, dependency: libs.appCompat],
             [configuration: impl, dependency: libs.constraintLayout],
 
             [configuration: testImpl, dependency: testLibs.junit],
             [configuration: testImpl, dependency: testLibs.mockito],
+    ]
+
+    avCoreDependencies = [
+            [configuration: impl, dependency: project(modules.common)],
+            [configuration: impl, dependency: project(modules.repository)],
+
+            [configuration: impl, dependency: libs.annotations],
+            [configuration: impl, dependency: libs.appCompat],
+
+            [configuration: testImpl, dependency: testLibs.junit],
+            [configuration: testImpl, dependency: testLibs.mockito],
+            [configuration: testImpl, dependency: testLibs.robolectric],
+            [configuration: testImpl, dependency: testLibs.androidTestCore],
     ]
 
     repositoryDependencies = [
