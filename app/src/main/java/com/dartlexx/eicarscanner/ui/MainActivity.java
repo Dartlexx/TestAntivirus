@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner;
+package com.dartlexx.eicarscanner.ui;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dartlexx.eicarscanner.R;
 import com.dartlexx.eicarscanner.service.ScanService;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button startButton = findViewById(R.id.button);
+        Button startButton = findViewById(R.id.startScanButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button stopButton = findViewById(R.id.button2);
+        Button stopButton = findViewById(R.id.stopScansButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

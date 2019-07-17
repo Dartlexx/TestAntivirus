@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">EicarScanner</string>
+
+    <string name="button_title_start_scan">Start full scan</string>
+    <string name="button_title_stop_all_scans">Stop all scans</string>
+
+    <string name="notification_channel_title_scan">Antivirus Scan</string>
+    <string name="notification_channel_description_scan">This notification channel displays status of ongoing Antivirus scans.</string>
+    <string name="notification_channel_title_threats">Virus threats</string>
+    <string name="notification_channel_description_threats">This notification channel displays information about found virus threats.</string>
+
+    <string name="notification_title_full_scan">Full scan</string>
+    <string name="notification_title_partial_scan">Partial scan</string>
+
+    <string name="notification_description_scan_scheduled">Scan is scheduled</string>
+    <string name="notification_description_full_scan_executing">Doing full scan of device</string>
+    <string name="notification_description_partial_scan_executing">Scanning new files or new and updated applications</string>
 </resources>

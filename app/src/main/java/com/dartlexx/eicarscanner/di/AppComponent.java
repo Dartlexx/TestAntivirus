@@ -1,5 +1,6 @@
 package com.dartlexx.eicarscanner.di;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
@@ -14,6 +15,7 @@ import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 import com.dartlexx.eicarscanner.repository.RepositoryServiceProvider;
+import com.dartlexx.eicarscanner.service.NotificationHelper;
 import com.dartlexx.eicarscanner.storage.StorageServiceProvider;
 import com.dartlexx.eicarscanner.ui.ThreatFoundListenerImpl;
 
@@ -34,6 +36,9 @@ public final class AppComponent {
     @Nullable
     private ThreatFoundListener mThreatFoundListener;
 
+    @Nullable
+    private NotificationHelper mNotificationHelper;
+
     public AppComponent(@NonNull Context appContext) {
         mAppContext = appContext;
     }
@@ -49,9 +54,18 @@ public final class AppComponent {
         PackageManager packageManager = mAppContext.getPackageManager();
         AppThreatSignatureRepo signatureRepo = getAppThreatSignaturesRepo();
         FoundAppThreatRepo threatRepo = getFoundAppThreatRepo();
-        ThreatFoundListener listener = getThreatFoundListeer();
+        ThreatFoundListener listener = getThreatFoundListener();
 
         return getAvCoreService().getAvDispatcher(packageManager, signatureRepo, threatRepo, listener);
+    }
+
+    @NonNull
+    public NotificationHelper getNotificationHelper() {
+        if (mNotificationHelper == null) {
+            final NotificationManager manager = (NotificationManager) mAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationHelper = new NotificationHelper(manager, mAppContext);
+        }
+        return mNotificationHelper;
     }
 
     @NonNull
@@ -61,7 +75,7 @@ public final class AppComponent {
     }
 
     @NonNull
-    private ThreatFoundListener getThreatFoundListeer() {
+    private ThreatFoundListener getThreatFoundListener() {
         if (mThreatFoundListener == null) {
             mThreatFoundListener = new ThreatFoundListenerImpl(mAppContext);
         }

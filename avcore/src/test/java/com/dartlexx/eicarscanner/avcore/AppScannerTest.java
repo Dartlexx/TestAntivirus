@@ -72,7 +72,7 @@ public class AppScannerTest {
 
         mAppScanner.scanInstalledApps(mListener);
 
-        verify(mListener).onScanStarted(false);
+        verify(mListener).onScanStarted();
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mProcessor, never()).onAppThreatFound(any(AppThreatInfo.class));
@@ -90,7 +90,7 @@ public class AppScannerTest {
 
         mAppScanner.scanInstalledApps(mListener);
 
-        verify(mListener).onScanStarted(false);
+        verify(mListener).onScanStarted();
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
@@ -112,7 +112,7 @@ public class AppScannerTest {
 
         mAppScanner.scanInstalledApps(mListener);
 
-        verify(mListener).onScanStarted(false);
+        verify(mListener).onScanStarted();
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
@@ -130,7 +130,7 @@ public class AppScannerTest {
 
         mAppScanner.scanInstalledApps(mListener);
 
-        verify(mListener).onScanStarted(false);
+        verify(mListener).onScanStarted();
         verify(mRepo).getAppSignatures();
         verify(mPackMan).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("org.virus.eicar"), anyInt());
@@ -154,7 +154,7 @@ public class AppScannerTest {
 
         mAppScanner.checkNewOrUpdatedApp(updatedApp, mListener);
 
-        verify(mListener).onScanStarted(true);
+        verify(mListener).onScanStarted();
         verify(mRepo).getAppSignatures();
         verify(mPackMan, never()).getInstalledApplications(anyInt());
         verify(mPackMan).getPackageInfo(eq("com.test.virus"), anyInt());

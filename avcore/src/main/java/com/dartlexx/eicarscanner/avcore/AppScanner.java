@@ -45,7 +45,7 @@ final class AppScanner {
     void scanInstalledApps(@NonNull ScanStateListener listener) {
         mStopAppScan = false;
 
-        listener.onScanStarted(false);
+        listener.onScanStarted();
         listener.onScanProgressChanged(0);
 
         final List<ApplicationInfo> appsList = mPackageMan.getInstalledApplications(GET_INSTALLED_APPS_FLAGS);
@@ -58,7 +58,7 @@ final class AppScanner {
 
             // Emulate long check
             try {
-                Thread.sleep(50);
+                Thread.sleep(150);
             } catch (InterruptedException ignored) {
             }
 
@@ -77,7 +77,7 @@ final class AppScanner {
     void checkNewOrUpdatedApp(@NonNull ApplicationInfo app,
                               @NonNull ScanStateListener listener) {
         mStopAppScan = false;
-        listener.onScanStarted(true);
+        listener.onScanStarted();
         listener.onScanProgressChanged(0);
 
         final List<AppThreatSignature> signaturesList = mSignatureRepo.getAppSignatures();
