@@ -2,11 +2,14 @@ package com.dartlexx.eicarscanner;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 import com.dartlexx.eicarscanner.di.AppComponent;
+import com.dartlexx.eicarscanner.receivers.AppInstalledReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ public final class App extends Application {
         if (isFirstRun()) {
             setupTestSignatures();
         }
+        registerAvReceivers();
     }
 
     public AppComponent getAppComponent() {
@@ -52,5 +56,12 @@ public final class App extends Application {
 
         final AppThreatSignatureRepo repo = mAppComponent.getAppThreatSignaturesRepo();
         repo.updateAppSignatures(signatures);
+    }
+
+    private void registerAvReceivers() {
+        final IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        filter.addDataScheme("package");
+        registerReceiver(new AppInstalledReceiver(), filter);
     }
 }
