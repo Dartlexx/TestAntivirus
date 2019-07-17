@@ -58,7 +58,7 @@ final class AppScanner {
 
             // Emulate long check
             try {
-                Thread.sleep(150);
+                Thread.sleep(50);
             } catch (InterruptedException ignored) {
             }
 
