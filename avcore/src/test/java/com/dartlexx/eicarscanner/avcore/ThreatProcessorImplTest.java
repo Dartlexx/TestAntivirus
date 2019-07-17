@@ -3,7 +3,7 @@ package com.dartlexx.eicarscanner.avcore;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
-import com.dartlexx.eicarscanner.common.ui.ThreatFoundUiListener;
+import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +43,8 @@ public class ThreatProcessorImplTest {
     }
 
     private final FoundAppThreatRepo mRepo = mock(FoundAppThreatRepo.class);
-    private final ThreatFoundUiListener mUiListener = mock(ThreatFoundUiListener.class);
-    private final ThreatProcessorImpl mProcessor = new ThreatProcessorImpl(mRepo, mUiListener);
+    private final ThreatFoundListener mUiListener = mock(ThreatFoundListener.class);
+    private final ThreatProcessor mProcessor = new ThreatProcessor(mRepo, mUiListener);
 
     @Captor
     private ArgumentCaptor<List<AppThreatInfo>> mCaptor;
