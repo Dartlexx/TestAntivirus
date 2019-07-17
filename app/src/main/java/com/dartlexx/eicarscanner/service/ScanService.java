@@ -74,7 +74,7 @@ public class ScanService extends Service {
 
         if (intent.getBooleanExtra(IS_STOP_SCAN_PARAM, false)) {
             mIsStopped = true;
-            avDispatcher.stopAppsScan();
+            avDispatcher.stopAllScans();
             stopSelf();
             return Service.START_NOT_STICKY;
         }
@@ -105,6 +105,7 @@ public class ScanService extends Service {
 
         private final NotificationHelper mHelper;
         private final int mId;
+        private final int mNotificationId;
         private final boolean mIsFullScan;
 
         ScanStateListenerImpl(@NonNull NotificationHelper helper,
@@ -113,8 +114,9 @@ public class ScanService extends Service {
             mHelper = helper;
             mId = serviceId;
             mIsFullScan = isFullScan;
+            mNotificationId = mHelper.getNextNotificationId();
 
-            startForeground(mId, getNotification(false, 0));
+            startForeground(mNotificationId, getNotification(false, 0));
         }
 
         @Override
@@ -124,14 +126,14 @@ public class ScanService extends Service {
         @Override
         public void onScanProgressChanged(int progress) {
             if (!mIsStopped) {
-                mHelper.updateNotification(mId,
+                mHelper.updateNotification(mNotificationId,
                         getNotification(true, progress));
             }
         }
 
         @Override
         public void onScanFinished() {
-            mHelper.cancelNotification(mId);
+            mHelper.cancelNotification(mNotificationId);
             stopSelf(mId);
         }
 

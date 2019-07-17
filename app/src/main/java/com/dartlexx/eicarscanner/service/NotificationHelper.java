@@ -14,6 +14,7 @@ import com.dartlexx.eicarscanner.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class NotificationHelper {
 
@@ -22,6 +23,7 @@ public final class NotificationHelper {
 
     private final NotificationManager mNotificationManager;
     private final Context mAppContext;
+    private final AtomicInteger mNextId = new AtomicInteger(1);
 
     public NotificationHelper(@NonNull NotificationManager manager,
                               @NonNull Context appContext) {
@@ -29,6 +31,10 @@ public final class NotificationHelper {
         mAppContext = appContext;
 
         setUpChannels();
+    }
+
+    int getNextNotificationId() {
+        return mNextId.getAndIncrement();
     }
 
     Notification getForegroundServiceNotification(@StringRes int titleRes,

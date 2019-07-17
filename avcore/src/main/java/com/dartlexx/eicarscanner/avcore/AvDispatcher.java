@@ -14,7 +14,7 @@ public final class AvDispatcher {
     @NonNull
     private final AppScanner mAppScanner;
 
-    private final ExecutorService mExecutor;
+    private ExecutorService mExecutor;
 
     AvDispatcher(@NonNull AppScanner appScanner) {
         mAppScanner = appScanner;
@@ -40,7 +40,9 @@ public final class AvDispatcher {
         });
     }
 
-    public synchronized void stopAppsScan() {
+    public synchronized void stopAllScans() {
         mAppScanner.stopScan();
+        mExecutor.shutdown();
+        mExecutor = Executors.newSingleThreadExecutor();
     }
 }
