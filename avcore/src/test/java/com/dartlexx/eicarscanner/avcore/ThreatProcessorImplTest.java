@@ -22,7 +22,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ThreatProcessorImplTest {
@@ -61,9 +60,9 @@ public class ThreatProcessorImplTest {
 
         mProcessor.onAppThreatFound(threat);
 
+        verify(mUiListener).onAppThreatFound("EicarVirus-2", "eicar.virus");
         verify(mRepo).getAppThreats();
         verify(mRepo, never()).updateAppThreats(ArgumentMatchers.<String, AppThreatInfo>anyMap());
-        verifyZeroInteractions(mUiListener);
     }
 
     @Test
@@ -73,9 +72,9 @@ public class ThreatProcessorImplTest {
 
         mProcessor.onAppThreatFound(threat);
 
+        verify(mUiListener).onAppThreatFound("New threat", "new.threat");
         verify(mRepo).getAppThreats();
         verify(mRepo).updateAppThreats(mCaptor.capture());
-        verify(mUiListener).onAppThreatFound("New threat", "new.threat");
 
         Map<String, AppThreatInfo> updated = mCaptor.getValue();
         assertEquals(3, updated.size());
