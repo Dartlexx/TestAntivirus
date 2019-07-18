@@ -12,10 +12,8 @@ import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 final class AppScanner {
 
@@ -49,7 +47,7 @@ final class AppScanner {
         listener.onScanProgressChanged(0);
 
         final List<ApplicationInfo> appsList = mPackageMan.getInstalledApplications(GET_INSTALLED_APPS_FLAGS);
-        final Map<String, AppThreatSignature> signatures = toMap(mSignatureRepo.getAppSignatures());
+        final Map<String, AppThreatSignature> signatures = mSignatureRepo.getAppSignatures();
 
         for (int i = 0; i < appsList.size(); i++) {
             if (mStopAppScan) {
@@ -80,15 +78,9 @@ final class AppScanner {
         listener.onScanStarted();
         listener.onScanProgressChanged(0);
 
-        final List<AppThreatSignature> signaturesList = mSignatureRepo.getAppSignatures();
-        for (AppThreatSignature signature : signaturesList) {
-            if (mStopAppScan) {
-                break;
-            }
-
-            if (Objects.equals(signature.getPackageName(), app.packageName)) {
-                checkSingleApp(app, signature);
-            }
+        AppThreatSignature signature = mSignatureRepo.getAppSignatures().get(app.packageName);
+        if (signature != null && !mStopAppScan) {
+            checkSingleApp(app, signature);
         }
 
         listener.onScanProgressChanged(100);
@@ -97,6 +89,10 @@ final class AppScanner {
 
     void stopScan() {
         mStopAppScan = true;
+    }
+
+    void checkRemovedApp(@NonNull String packageName) {
+        mProcessor.onAppDeleted(packageName);
     }
 
     private void checkSingleApp(@NonNull ApplicationInfo app,
@@ -122,14 +118,5 @@ final class AppScanner {
                     version);
             mProcessor.onAppThreatFound(foundThreat);
         }
-    }
-
-    @NonNull
-    private static Map<String, AppThreatSignature> toMap(@NonNull List<AppThreatSignature> signatureList) {
-        final Map<String, AppThreatSignature> result = new HashMap<>(signatureList.size());
-        for (AppThreatSignature signature : signatureList) {
-            result.put(signature.getPackageName(), signature);
-        }
-        return result;
     }
 }

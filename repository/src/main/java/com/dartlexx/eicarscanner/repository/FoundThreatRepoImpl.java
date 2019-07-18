@@ -6,7 +6,7 @@ import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 
-import java.util.List;
+import java.util.Map;
 
 final class FoundThreatRepoImpl implements FoundAppThreatRepo {
 
@@ -19,12 +19,12 @@ final class FoundThreatRepoImpl implements FoundAppThreatRepo {
 
     @NonNull
     @Override
-    public List<AppThreatInfo> getAppThreats() {
+    public Map<String, AppThreatInfo> getAppThreats() {
         return mAppThreatStorage.getAppThreats();
     }
 
     @Override
-    public void updateAppThreats(@NonNull List<AppThreatInfo> foundThreats) {
+    public void updateAppThreats(@NonNull Map<String, AppThreatInfo> foundThreats) {
         mAppThreatStorage.updateAppThreats(foundThreats);
     }
 }

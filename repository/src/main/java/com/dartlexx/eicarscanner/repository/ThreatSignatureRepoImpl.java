@@ -6,7 +6,7 @@ import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
 
-import java.util.List;
+import java.util.Map;
 
 final class ThreatSignatureRepoImpl implements AppThreatSignatureRepo {
 
@@ -19,12 +19,12 @@ final class ThreatSignatureRepoImpl implements AppThreatSignatureRepo {
 
     @NonNull
     @Override
-    public List<AppThreatSignature> getAppSignatures() {
+    public Map<String, AppThreatSignature> getAppSignatures() {
         return mAppSignatureStorage.getAppSignatures();
     }
 
     @Override
-    public void updateAppSignatures(@NonNull List<AppThreatSignature> newSignatures) {
+    public void updateAppSignatures(@NonNull Map<String, AppThreatSignature> newSignatures) {
         mAppSignatureStorage.updateAppSignatures(newSignatures);
     }
 }

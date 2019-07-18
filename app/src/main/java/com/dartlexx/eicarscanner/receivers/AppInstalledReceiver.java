@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 
+import com.dartlexx.eicarscanner.App;
 import com.dartlexx.eicarscanner.service.ScanService;
 
 public class AppInstalledReceiver extends BroadcastReceiver {
@@ -17,10 +18,19 @@ public class AppInstalledReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
+        final Uri data = intent.getData();
 
-        if (Intent.ACTION_PACKAGE_ADDED.equals(action) ||
+        if (Intent.ACTION_PACKAGE_REMOVED.equals(action) && data != null) {
+            String packageName = data.getEncodedSchemeSpecificPart();
+            Log.d(TAG, "Detected app was removed: " + packageName);
+
+            ((App) context.getApplicationContext())
+                    .getAppComponent()
+                    .getAvDispatcher()
+                    .checkRemovedApp(packageName);
+        } else if (Intent.ACTION_PACKAGE_ADDED.equals(action) ||
                 Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
-            Uri data = intent.getData();
+
             if (data == null) {
                 ScanService.startFullScan(context);
                 return;

@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 
-import java.util.List;
+import java.util.Map;
 
 public interface AppThreatSignatureRepo {
 
     @NonNull
-    List<AppThreatSignature> getAppSignatures();
+    Map<String, AppThreatSignature> getAppSignatures();
 
-    void updateAppSignatures(@NonNull List<AppThreatSignature> newSignatures);
+    void updateAppSignatures(@NonNull Map<String, AppThreatSignature> newSignatures);
 }

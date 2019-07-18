@@ -12,10 +12,10 @@ import com.dartlexx.eicarscanner.common.storage.FoundFileThreatStorage;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 final class FoundThreatsStorageImpl implements FoundAppThreatStorage, FoundFileThreatStorage {
@@ -32,19 +32,19 @@ final class FoundThreatsStorageImpl implements FoundAppThreatStorage, FoundFileT
 
     @NonNull
     @Override
-    public List<AppThreatInfo> getAppThreats() {
+    public Map<String, AppThreatInfo> getAppThreats() {
         final Set<String> data = mThreatStorage.getStringSet(FOUND_APP_THREATS_KEY,
                 Collections.<String>emptySet());
         if (data == null) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
 
         final Gson gson = new Gson();
-        final List<AppThreatInfo> result = new ArrayList<>();
+        final Map<String, AppThreatInfo> result = new HashMap<>();
         for (String record: data) {
             try {
                 AppThreatInfo threat = gson.fromJson(record, AppThreatInfo.class);
-                result.add(threat);
+                result.put(threat.getPackageName(), threat);
             } catch (JsonSyntaxException exc) {
                 Log.w(TAG, "Failed to parse from JSON following string: " + record);
             }
@@ -53,10 +53,10 @@ final class FoundThreatsStorageImpl implements FoundAppThreatStorage, FoundFileT
     }
 
     @Override
-    public void updateAppThreats(@NonNull List<AppThreatInfo> foundThreats) {
+    public void updateAppThreats(@NonNull Map<String, AppThreatInfo> foundThreats) {
         final Set<String> data = new HashSet<>(foundThreats.size());
         final Gson gson = new Gson();
-        for (AppThreatInfo threat: foundThreats) {
+        for (AppThreatInfo threat: foundThreats.values()) {
             String record = gson.toJson(threat);
             data.add(record);
         }
@@ -67,19 +67,19 @@ final class FoundThreatsStorageImpl implements FoundAppThreatStorage, FoundFileT
 
     @NonNull
     @Override
-    public List<FileThreatInfo> getFileThreats() {
+    public Map<String, FileThreatInfo> getFileThreats() {
         final Set<String> data = mThreatStorage.getStringSet(FOUND_FILE_THREATS_KEY,
                 Collections.<String>emptySet());
         if (data == null) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
 
         final Gson gson = new Gson();
-        final List<FileThreatInfo> result = new ArrayList<>();
+        final Map<String, FileThreatInfo> result = new HashMap<>();
         for (String record: data) {
             try {
                 FileThreatInfo threat = gson.fromJson(record, FileThreatInfo.class);
-                result.add(threat);
+                result.put(threat.getFilePath(), threat);
             } catch (JsonSyntaxException exc) {
                 Log.w(TAG, "Failed to parse from JSON following string: " + record);
             }
@@ -88,10 +88,10 @@ final class FoundThreatsStorageImpl implements FoundAppThreatStorage, FoundFileT
     }
 
     @Override
-    public void updateFileThreats(@NonNull List<FileThreatInfo> foundThreats) {
+    public void updateFileThreats(@NonNull Map<String, FileThreatInfo> foundThreats) {
         final Set<String> data = new HashSet<>(foundThreats.size());
         final Gson gson = new Gson();
-        for (FileThreatInfo threat: foundThreats) {
+        for (FileThreatInfo threat: foundThreats.values()) {
             String record = gson.toJson(threat);
             data.add(record);
         }

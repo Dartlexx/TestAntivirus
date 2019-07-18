@@ -1,9 +1,9 @@
 package com.dartlexx.eicarscanner.avcore;
 
+import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
-import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,19 +27,19 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @RunWith(MockitoJUnitRunner.class)
 public class ThreatProcessorImplTest {
 
-    private static final List<AppThreatInfo> EXISTING_THREATS;
+    private static final Map<String, AppThreatInfo> EXISTING_THREATS;
 
     static {
-        EXISTING_THREATS = new ArrayList<>(2);
-        EXISTING_THREATS.add(new AppThreatInfo(
-                new AppThreatSignature(1, "test.virus"),
-                "TestVirus",
-                13));
+        EXISTING_THREATS = new HashMap<>(2);
+        EXISTING_THREATS.put("test.virus",
+                new AppThreatInfo(new AppThreatSignature(1, "test.virus"),
+                        "TestVirus",
+                        13));
 
-        EXISTING_THREATS.add(new AppThreatInfo(
-                new AppThreatSignature(2, "eicar.virus"),
-                "EicarVirus",
-                42));
+        EXISTING_THREATS.put("eicar.virus",
+                new AppThreatInfo(new AppThreatSignature(2, "eicar.virus"),
+                        "EicarVirus",
+                        42));
     }
 
     private final FoundAppThreatRepo mRepo = mock(FoundAppThreatRepo.class);
@@ -47,7 +47,7 @@ public class ThreatProcessorImplTest {
     private final ThreatProcessor mProcessor = new ThreatProcessor(mRepo, mUiListener);
 
     @Captor
-    private ArgumentCaptor<List<AppThreatInfo>> mCaptor;
+    private ArgumentCaptor<Map<String, AppThreatInfo>> mCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -62,7 +62,7 @@ public class ThreatProcessorImplTest {
         mProcessor.onAppThreatFound(threat);
 
         verify(mRepo).getAppThreats();
-        verify(mRepo, never()).updateAppThreats(ArgumentMatchers.<AppThreatInfo>anyList());
+        verify(mRepo, never()).updateAppThreats(ArgumentMatchers.<String, AppThreatInfo>anyMap());
         verifyZeroInteractions(mUiListener);
     }
 
@@ -77,9 +77,9 @@ public class ThreatProcessorImplTest {
         verify(mRepo).updateAppThreats(mCaptor.capture());
         verify(mUiListener).onAppThreatFound("New threat", "new.threat");
 
-        List<AppThreatInfo> updated = mCaptor.getValue();
+        Map<String, AppThreatInfo> updated = mCaptor.getValue();
         assertEquals(3, updated.size());
-        assertTrue(updated.containsAll(EXISTING_THREATS));
-        assertTrue(updated.contains(threat));
+        assertTrue(updated.values().containsAll(EXISTING_THREATS.values()));
+        assertTrue(updated.values().contains(threat));
     }
 }

@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.dartlexx.eicarscanner.common.models.FileThreatInfo;
 
-import java.util.List;
+import java.util.Map;
 
 public interface FoundFileThreatStorage {
 
     @NonNull
-    List<FileThreatInfo> getFileThreats();
+    Map<String, FileThreatInfo> getFileThreats();
 
-    void updateFileThreats(@NonNull List<FileThreatInfo> foundThreats);
+    void updateFileThreats(@NonNull Map<String, FileThreatInfo> foundThreats);
 }

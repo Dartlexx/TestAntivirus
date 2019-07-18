@@ -6,9 +6,8 @@ import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
 import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 final class ThreatProcessor {
 
@@ -25,16 +24,26 @@ final class ThreatProcessor {
     }
 
     void onAppThreatFound(@NonNull AppThreatInfo foundThreat) {
-        final List<AppThreatInfo> knownThreats = new ArrayList<>(mAppThreatRepo.getAppThreats());
-        for (AppThreatInfo threat : knownThreats) {
-            if (Objects.equals(threat.getPackageName(), foundThreat.getPackageName())) {
-                return;
-            }
+        final Map<String, AppThreatInfo> knownThreats = new HashMap<>(mAppThreatRepo.getAppThreats());
+        AppThreatInfo existing = knownThreats.get(foundThreat.getPackageName());
+        if (existing != null) {
+            return;
         }
 
-        knownThreats.add(foundThreat);
+        knownThreats.put(foundThreat.getPackageName(), foundThreat);
         mAppThreatRepo.updateAppThreats(knownThreats);
 
         mListener.onAppThreatFound(foundThreat.getAppName(), foundThreat.getPackageName());
+    }
+
+    void onAppDeleted(@NonNull String packageName) {
+        final Map<String, AppThreatInfo> knownThreats = new HashMap<>(mAppThreatRepo.getAppThreats());
+        AppThreatInfo removed = knownThreats.remove(packageName);
+        if (removed == null) {
+            return;
+        }
+
+        mAppThreatRepo.updateAppThreats(knownThreats);
+        mListener.onAppThreatRemoved(packageName);
     }
 }

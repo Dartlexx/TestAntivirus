@@ -10,10 +10,10 @@ import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 final class ThreatSignatureStorageImpl implements AppThreatSignatureStorage {
@@ -29,19 +29,19 @@ final class ThreatSignatureStorageImpl implements AppThreatSignatureStorage {
 
     @NonNull
     @Override
-    public List<AppThreatSignature> getAppSignatures() {
+    public Map<String, AppThreatSignature> getAppSignatures() {
         final Set<String> data = mSignatureStorage.getStringSet(APP_SIGNATURES_LIST_KEY,
                 Collections.<String>emptySet());
         if (data == null) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
 
         final Gson gson = new Gson();
-        final List<AppThreatSignature> result = new ArrayList<>();
+        final Map<String, AppThreatSignature> result = new HashMap<>();
         for (String record: data) {
             try {
                 AppThreatSignature threat = gson.fromJson(record, AppThreatSignature.class);
-                result.add(threat);
+                result.put(threat.getPackageName(), threat);
             } catch (JsonSyntaxException exc) {
                 Log.w(TAG, "Failed to parse from JSON following string: " + record);
             }
@@ -50,10 +50,10 @@ final class ThreatSignatureStorageImpl implements AppThreatSignatureStorage {
     }
 
     @Override
-    public void updateAppSignatures(@NonNull List<AppThreatSignature> updatedSignatures) {
+    public void updateAppSignatures(@NonNull Map<String, AppThreatSignature> updatedSignatures) {
         final Set<String> data = new HashSet<>(updatedSignatures.size());
         final Gson gson = new Gson();
-        for (AppThreatSignature signature: updatedSignatures) {
+        for (AppThreatSignature signature: updatedSignatures.values()) {
             String record = gson.toJson(signature);
             data.add(record);
         }
