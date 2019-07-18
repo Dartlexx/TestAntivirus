@@ -17,6 +17,7 @@ import com.dartlexx.eicarscanner.R;
 import com.dartlexx.eicarscanner.avcore.AvDispatcher;
 import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
 import com.dartlexx.eicarscanner.di.AppComponent;
+import com.dartlexx.eicarscanner.ui.NotificationHelper;
 
 public class ScanService extends Service {
 

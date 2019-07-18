@@ -78,6 +78,12 @@ final class AppScanner {
         listener.onScanStarted();
         listener.onScanProgressChanged(0);
 
+        // Emulate long check
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException ignored) {
+        }
+
         AppThreatSignature signature = mSignatureRepo.getAppSignatures().get(app.packageName);
         if (signature != null && !mStopAppScan) {
             checkSingleApp(app, signature);

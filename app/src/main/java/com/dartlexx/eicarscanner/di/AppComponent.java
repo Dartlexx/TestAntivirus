@@ -15,7 +15,7 @@ import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 import com.dartlexx.eicarscanner.repository.RepositoryServiceProvider;
-import com.dartlexx.eicarscanner.service.NotificationHelper;
+import com.dartlexx.eicarscanner.ui.NotificationHelper;
 import com.dartlexx.eicarscanner.storage.StorageServiceProvider;
 import com.dartlexx.eicarscanner.ui.ThreatFoundListenerImpl;
 
@@ -77,7 +77,7 @@ public final class AppComponent {
     @NonNull
     private ThreatFoundListener getThreatFoundListener() {
         if (mThreatFoundListener == null) {
-            mThreatFoundListener = new ThreatFoundListenerImpl(mAppContext);
+            mThreatFoundListener = new ThreatFoundListenerImpl(getNotificationHelper());
         }
         return mThreatFoundListener;
     }

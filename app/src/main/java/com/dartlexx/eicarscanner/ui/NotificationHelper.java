@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner.service;
+package com.dartlexx.eicarscanner.ui;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -33,11 +33,11 @@ public final class NotificationHelper {
         setUpChannels();
     }
 
-    int getNextNotificationId() {
+    public int getNextNotificationId() {
         return mNextId.getAndIncrement();
     }
 
-    Notification getForegroundServiceNotification(@StringRes int titleRes,
+    public Notification getForegroundServiceNotification(@StringRes int titleRes,
                                                          @StringRes int descriptionRes,
                                                          boolean showProgress,
                                                          int progressValue) {
@@ -48,19 +48,33 @@ public final class NotificationHelper {
                 .setContentTitle(title)
                 .setContentText(description)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_stat_beach_access)
                 .setOnlyAlertOnce(true)
                 .setProgress(showProgress ? 100 : 0, showProgress ? progressValue : 0, false)
                 .build();
     }
 
-    void updateNotification(int notificationId,
+    public void updateNotification(int notificationId,
                             @NonNull Notification notification) {
         mNotificationManager.notify(notificationId, notification);
     }
 
-    void cancelNotification(int notificationId) {
+    public void cancelNotification(int notificationId) {
         mNotificationManager.cancel(notificationId);
+    }
+
+    public int showThreatNotification(@StringRes int titleRes,
+                                      @StringRes int descriptionRes,
+                                      @NonNull String threatName) {
+        int notificationId = getNextNotificationId();
+        NotificationCompat.Builder builder = getNotificationBuilder(FOUND_THREATS_CHANNEL)
+                .setContentTitle(mAppContext.getString(titleRes))
+                .setContentText(mAppContext.getString(descriptionRes, threatName))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSmallIcon(R.drawable.ic_stat_bug_report);
+
+        mNotificationManager.notify(notificationId, builder.build());
+        return notificationId;
     }
 
     private void setUpChannels() {
