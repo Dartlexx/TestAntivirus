@@ -24,6 +24,8 @@ final class ThreatProcessor {
     }
 
     void onAppThreatFound(@NonNull AppThreatInfo foundThreat) {
+        mListener.onAppThreatFound(foundThreat.getAppName(), foundThreat.getPackageName());
+
         final Map<String, AppThreatInfo> knownThreats = new HashMap<>(mAppThreatRepo.getAppThreats());
         AppThreatInfo existing = knownThreats.get(foundThreat.getPackageName());
         if (existing != null) {
@@ -32,8 +34,6 @@ final class ThreatProcessor {
 
         knownThreats.put(foundThreat.getPackageName(), foundThreat);
         mAppThreatRepo.updateAppThreats(knownThreats);
-
-        mListener.onAppThreatFound(foundThreat.getAppName(), foundThreat.getPackageName());
     }
 
     void onAppDeleted(@NonNull String packageName) {

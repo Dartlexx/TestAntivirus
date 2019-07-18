@@ -11,8 +11,12 @@
 
     <string name="notification_title_full_scan">Full scan</string>
     <string name="notification_title_partial_scan">Partial scan</string>
+    <string name="notification_title_app_threat_found">App threat</string>
 
     <string name="notification_description_scan_scheduled">Scan is scheduled</string>
     <string name="notification_description_full_scan_executing">Doing full scan of device</string>
     <string name="notification_description_partial_scan_executing">Scanning new files or new and updated applications</string>
+    <string name="notification_description_threat_found">Antivirus found new threat: %s</string>
+
+    <string name="notification_action_delete">Delete</string>
 </resources>

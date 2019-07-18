@@ -1,12 +1,14 @@
-package com.dartlexx.eicarscanner.service;
+package com.dartlexx.eicarscanner.ui;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 
@@ -33,11 +35,11 @@ public final class NotificationHelper {
         setUpChannels();
     }
 
-    int getNextNotificationId() {
+    public int getNextNotificationId() {
         return mNextId.getAndIncrement();
     }
 
-    Notification getForegroundServiceNotification(@StringRes int titleRes,
+    public Notification getForegroundServiceNotification(@StringRes int titleRes,
                                                          @StringRes int descriptionRes,
                                                          boolean showProgress,
                                                          int progressValue) {
@@ -48,19 +50,40 @@ public final class NotificationHelper {
                 .setContentTitle(title)
                 .setContentText(description)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_stat_beach_access)
                 .setOnlyAlertOnce(true)
                 .setProgress(showProgress ? 100 : 0, showProgress ? progressValue : 0, false)
                 .build();
     }
 
-    void updateNotification(int notificationId,
-                            @NonNull Notification notification) {
+    public void updateNotification(int notificationId,
+                                   @NonNull Notification notification) {
         mNotificationManager.notify(notificationId, notification);
     }
 
-    void cancelNotification(int notificationId) {
+    public void cancelNotification(int notificationId) {
         mNotificationManager.cancel(notificationId);
+    }
+
+    public void showThreatNotification(int notificationId,
+                                       @StringRes int titleRes,
+                                       @StringRes int descriptionRes,
+                                       @NonNull String threatName,
+                                       @Nullable PendingIntent removeIntent) {
+        NotificationCompat.Builder builder = getNotificationBuilder(FOUND_THREATS_CHANNEL)
+                .setContentTitle(mAppContext.getString(titleRes))
+                .setContentText(mAppContext.getString(descriptionRes, threatName))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSmallIcon(R.drawable.ic_stat_bug_report)
+                .setAutoCancel(true);
+
+        if (removeIntent != null) {
+            builder.addAction(R.drawable.ic_delete_forever,
+                    mAppContext.getString(R.string.notification_action_delete),
+                    removeIntent);
+        }
+
+        mNotificationManager.notify(notificationId, builder.build());
     }
 
     private void setUpChannels() {
