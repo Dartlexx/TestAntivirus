@@ -45,4 +45,13 @@ public final class AvDispatcher {
         mExecutor.shutdown();
         mExecutor = Executors.newSingleThreadExecutor();
     }
+
+    public synchronized void checkRemovedApp(@NonNull final String packageName) {
+        mExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                mAppScanner.checkRemovedApp(packageName);
+            }
+        });
+    }
 }

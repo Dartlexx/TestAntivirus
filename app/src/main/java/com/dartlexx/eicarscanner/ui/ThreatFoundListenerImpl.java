@@ -22,4 +22,11 @@ public final class ThreatFoundListenerImpl implements ThreatFoundListener {
                 Toast.LENGTH_LONG)
                 .show();
     }
+
+    @Override
+    public void onAppThreatRemoved(@NonNull String packageName) {
+        Toast.makeText(mAppContext, "App threat was removed: " + packageName,
+                Toast.LENGTH_LONG)
+                .show();
+    }
 }

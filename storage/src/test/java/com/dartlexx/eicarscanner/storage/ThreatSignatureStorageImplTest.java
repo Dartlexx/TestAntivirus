@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -25,12 +25,12 @@ import static org.junit.Assert.*;
 public class ThreatSignatureStorageImplTest {
 
     private static final String PREFS_NAME = "test_prefs";
-    private static final List<AppThreatSignature> EXPECTED;
+    private static final Map<String, AppThreatSignature> EXPECTED;
 
     static {
-        EXPECTED = new ArrayList<>(2);
-        EXPECTED.add(new AppThreatSignature(42, "com.test.virus"));
-        EXPECTED.add(new AppThreatSignature(66, "org.virus.eicar"));
+        EXPECTED = new HashMap<>(2);
+        EXPECTED.put("com.test.virus", new AppThreatSignature(42, "com.test.virus"));
+        EXPECTED.put("org.virus.eicar", new AppThreatSignature(66, "org.virus.eicar"));
     }
 
     private ThreatSignatureStorageImpl mStorage;
@@ -51,7 +51,7 @@ public class ThreatSignatureStorageImplTest {
 
     @Test
     public void whenStorageEmptyNoSignaturesReturned() throws Exception {
-        List<AppThreatSignature> signatures = mStorage.getAppSignatures();
+        Map<String, AppThreatSignature> signatures = mStorage.getAppSignatures();
 
         assertNotNull(signatures);
         assertTrue(signatures.isEmpty());
@@ -61,25 +61,25 @@ public class ThreatSignatureStorageImplTest {
     public void whenSignaturesSavedThenTheyAreLoaded() throws Exception {
         mStorage.updateAppSignatures(EXPECTED);
 
-        List<AppThreatSignature> signatures = mStorage.getAppSignatures();
+        Map<String, AppThreatSignature> signatures = mStorage.getAppSignatures();
 
         assertNotNull(signatures);
         assertEquals(EXPECTED.size(), signatures.size());
-        assertTrue(signatures.containsAll(EXPECTED));
+        assertTrue(signatures.values().containsAll(EXPECTED.values()));
     }
 
     @Test
     public void whenSignaturesAreRewrittenThenCorrectAreLoaded() throws Exception {
         mStorage.updateAppSignatures(EXPECTED);
 
-        List<AppThreatSignature> newSignatures = new ArrayList<>(1);
-        newSignatures.add(new AppThreatSignature(77, "someOtherSignature"));
+        Map<String, AppThreatSignature> newSignatures = new HashMap<>(1);
+        newSignatures.put("someOtherSignature", new AppThreatSignature(77, "someOtherSignature"));
         mStorage.updateAppSignatures(newSignatures);
 
-        List<AppThreatSignature> updated = mStorage.getAppSignatures();
+        Map<String, AppThreatSignature> updated = mStorage.getAppSignatures();
 
         assertNotNull(updated);
         assertEquals(updated.size(), newSignatures.size());
-        assertTrue(updated.containsAll(newSignatures));
+        assertTrue(updated.values().containsAll(newSignatures.values()));
     }
 }

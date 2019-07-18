@@ -11,8 +11,8 @@ import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
 import com.dartlexx.eicarscanner.di.AppComponent;
 import com.dartlexx.eicarscanner.receivers.AppInstalledReceiver;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class App extends Application {
 
@@ -50,9 +50,11 @@ public final class App extends Application {
     }
 
     private void setupTestSignatures() {
-        final List<AppThreatSignature> signatures = new ArrayList<>(2);
-        signatures.add(new AppThreatSignature(1, "com.zoner.android.eicar"));
-        signatures.add(new AppThreatSignature(2, "com.fsecure.eicar.antivirus.test"));
+        final Map<String, AppThreatSignature> signatures = new HashMap<>(2);
+        signatures.put("com.zoner.android.eicar",
+                new AppThreatSignature(1, "com.zoner.android.eicar"));
+        signatures.put("com.fsecure.eicar.antivirus.test",
+                new AppThreatSignature(2, "com.fsecure.eicar.antivirus.test"));
 
         final AppThreatSignatureRepo repo = mAppComponent.getAppThreatSignaturesRepo();
         repo.updateAppSignatures(signatures);
@@ -61,6 +63,7 @@ public final class App extends Application {
     private void registerAvReceivers() {
         final IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
         registerReceiver(new AppInstalledReceiver(), filter);
     }

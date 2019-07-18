@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 
-import java.util.List;
+import java.util.Map;
 
 public interface FoundAppThreatRepo {
 
     @NonNull
-    List<AppThreatInfo> getAppThreats();
+    Map<String, AppThreatInfo> getAppThreats();
 
-    void updateAppThreats(@NonNull List<AppThreatInfo> foundThreats);
+    void updateAppThreats(@NonNull Map<String, AppThreatInfo> foundThreats);
 }
