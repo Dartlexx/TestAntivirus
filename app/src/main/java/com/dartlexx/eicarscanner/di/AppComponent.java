@@ -77,7 +77,7 @@ public final class AppComponent {
     @NonNull
     private ThreatFoundListener getThreatFoundListener() {
         if (mThreatFoundListener == null) {
-            mThreatFoundListener = new ThreatFoundListenerImpl(getNotificationHelper());
+            mThreatFoundListener = new ThreatFoundListenerImpl(mAppContext, getNotificationHelper());
         }
         return mThreatFoundListener;
     }

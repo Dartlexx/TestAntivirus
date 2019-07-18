@@ -3,10 +3,12 @@ package com.dartlexx.eicarscanner.ui;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 
@@ -55,7 +57,7 @@ public final class NotificationHelper {
     }
 
     public void updateNotification(int notificationId,
-                            @NonNull Notification notification) {
+                                   @NonNull Notification notification) {
         mNotificationManager.notify(notificationId, notification);
     }
 
@@ -63,18 +65,25 @@ public final class NotificationHelper {
         mNotificationManager.cancel(notificationId);
     }
 
-    public int showThreatNotification(@StringRes int titleRes,
-                                      @StringRes int descriptionRes,
-                                      @NonNull String threatName) {
-        int notificationId = getNextNotificationId();
+    public void showThreatNotification(int notificationId,
+                                       @StringRes int titleRes,
+                                       @StringRes int descriptionRes,
+                                       @NonNull String threatName,
+                                       @Nullable PendingIntent removeIntent) {
         NotificationCompat.Builder builder = getNotificationBuilder(FOUND_THREATS_CHANNEL)
                 .setContentTitle(mAppContext.getString(titleRes))
                 .setContentText(mAppContext.getString(descriptionRes, threatName))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setSmallIcon(R.drawable.ic_stat_bug_report);
+                .setSmallIcon(R.drawable.ic_stat_bug_report)
+                .setAutoCancel(true);
+
+        if (removeIntent != null) {
+            builder.addAction(R.drawable.ic_delete_forever,
+                    mAppContext.getString(R.string.notification_action_delete),
+                    removeIntent);
+        }
 
         mNotificationManager.notify(notificationId, builder.build());
-        return notificationId;
     }
 
     private void setUpChannels() {
