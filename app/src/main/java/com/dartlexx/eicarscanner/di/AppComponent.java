@@ -9,11 +9,14 @@ import androidx.annotation.Nullable;
 
 import com.dartlexx.eicarscanner.avcore.AvCoreServiceProvider;
 import com.dartlexx.eicarscanner.avcore.AvDispatcher;
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
+import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
+import com.dartlexx.eicarscanner.common.repository.FoundFileThreatRepo;
 import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
+import com.dartlexx.eicarscanner.common.storage.FileThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
+import com.dartlexx.eicarscanner.common.storage.FoundFileThreatStorage;
 import com.dartlexx.eicarscanner.repository.RepositoryServiceProvider;
 import com.dartlexx.eicarscanner.ui.NotificationHelper;
 import com.dartlexx.eicarscanner.storage.StorageServiceProvider;
@@ -44,19 +47,22 @@ public final class AppComponent {
     }
 
     @NonNull
-    public AppThreatSignatureRepo getAppThreatSignaturesRepo() {
-        AppThreatSignatureStorage storage = getStorageService().getAppSignatureStorage(mAppContext);
-        return getRepoService().getAppSignatureRepo(storage);
+    public ThreatSignatureRepo getThreatSignaturesRepo() {
+        AppThreatSignatureStorage appStorage = getStorageService().getAppSignatureStorage(mAppContext);
+        FileThreatSignatureStorage fileStorage = getStorageService().getFileSignatureStorage(mAppContext);
+        return getRepoService().getThreatSignatureRepo(appStorage, fileStorage);
     }
 
     @NonNull
     public AvDispatcher getAvDispatcher() {
         PackageManager packageManager = mAppContext.getPackageManager();
-        AppThreatSignatureRepo signatureRepo = getAppThreatSignaturesRepo();
-        FoundAppThreatRepo threatRepo = getFoundAppThreatRepo();
+        ThreatSignatureRepo signatureRepo = getThreatSignaturesRepo();
+        FoundAppThreatRepo appThreatRepo = getFoundAppThreatRepo();
+        FoundFileThreatRepo fileThreatRepo = getFoundFileThreatRepo();
         ThreatFoundListener listener = getThreatFoundListener();
 
-        return getAvCoreService().getAvDispatcher(packageManager, signatureRepo, threatRepo, listener);
+        return getAvCoreService().getAvDispatcher(packageManager, signatureRepo, appThreatRepo,
+                fileThreatRepo, listener);
     }
 
     @NonNull
@@ -70,8 +76,16 @@ public final class AppComponent {
 
     @NonNull
     private FoundAppThreatRepo getFoundAppThreatRepo() {
-        FoundAppThreatStorage storage = getStorageService().getAppThreatStorage(mAppContext);
-        return getRepoService().getAppThreatRepo(storage);
+        FoundAppThreatStorage appStorage = getStorageService().getAppThreatStorage(mAppContext);
+        FoundFileThreatStorage fileStorage = getStorageService().getFileThreatStorage(mAppContext);
+        return getRepoService().getAppThreatRepo(appStorage, fileStorage);
+    }
+
+    @NonNull
+    private FoundFileThreatRepo getFoundFileThreatRepo() {
+        FoundAppThreatStorage appStorage = getStorageService().getAppThreatStorage(mAppContext);
+        FoundFileThreatStorage fileStorage = getStorageService().getFileThreatStorage(mAppContext);
+        return getRepoService().getFileThreatRepo(appStorage, fileStorage);
     }
 
     @NonNull

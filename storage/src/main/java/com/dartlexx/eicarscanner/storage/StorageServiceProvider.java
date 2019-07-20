@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
+import com.dartlexx.eicarscanner.common.storage.FileThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundFileThreatStorage;
 
@@ -38,14 +39,22 @@ public class StorageServiceProvider {
     }
 
     @NonNull
-    public synchronized AppThreatSignatureStorage getAppSignatureStorage(
-            @NonNull Context appContext) {
+    public synchronized AppThreatSignatureStorage getAppSignatureStorage(@NonNull Context context) {
         if (mSignatureStorage == null) {
-            initSignatureStorage(appContext);
+            initSignatureStorage(context);
         }
         return mSignatureStorage;
     }
 
+    @NonNull
+    public synchronized FileThreatSignatureStorage getFileSignatureStorage(@NonNull Context context) {
+        if (mSignatureStorage == null) {
+            initSignatureStorage(context);
+        }
+        return mSignatureStorage;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public synchronized void resetProvider() {
         mThreatStorage = null;
         mSignatureStorage = null;

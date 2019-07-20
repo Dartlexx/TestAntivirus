@@ -48,8 +48,28 @@ public final class ThreatFoundListenerImpl implements ThreatFoundListener {
     }
 
     @Override
+    public void onFileThreatFound(@NonNull String fileName, @NonNull String absolutePath) {
+        int notificationId = mHelper.getNextNotificationId();
+
+        mHelper.showThreatNotification(notificationId,
+                R.string.notification_title_file_threat_found,
+                R.string.notification_description_threat_found,
+                fileName,
+                null);
+    }
+
+    @Override
     public void onAppThreatRemoved(@NonNull String packageName) {
-        Integer id = mThreatNotifications.get(packageName);
+        onThreatRemoved(packageName);
+    }
+
+    @Override
+    public void onFileThreatRemoved(@NonNull String filePath) {
+        onThreatRemoved(filePath);
+    }
+
+    private void onThreatRemoved(@NonNull String threatId) {
+        Integer id = mThreatNotifications.get(threatId);
         if (id != null) {
             mHelper.cancelNotification(id);
         }

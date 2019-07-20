@@ -65,14 +65,17 @@ public final class NotificationHelper {
         mNotificationManager.cancel(notificationId);
     }
 
-    public void showThreatNotification(int notificationId,
-                                       @StringRes int titleRes,
-                                       @StringRes int descriptionRes,
-                                       @NonNull String threatName,
-                                       @Nullable PendingIntent removeIntent) {
+    @SuppressWarnings("SameParameterValue")
+    void showThreatNotification(int notificationId,
+                                @StringRes int titleRes,
+                                @StringRes int descriptionRes,
+                                @NonNull String threatName,
+                                @Nullable PendingIntent removeIntent) {
+        String message = mAppContext.getString(descriptionRes, threatName);
         NotificationCompat.Builder builder = getNotificationBuilder(FOUND_THREATS_CHANNEL)
                 .setContentTitle(mAppContext.getString(titleRes))
-                .setContentText(mAppContext.getString(descriptionRes, threatName))
+                .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.ic_stat_bug_report)
                 .setAutoCancel(true);
