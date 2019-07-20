@@ -34,14 +34,14 @@ public final class FilesListHelper {
 
                 if (child.isFile() && child.length() > 0) {
                     hasFiles = true;
-                    result.totalFilesCount++;
+                    result.mTotalFilesCount++;
                 } else if (child.isDirectory()) {
                     toProcess.add(child);
                 }
             }
 
             if (hasFiles) {
-                result.plainFolders.add(folder);
+                result.mPlainFolders.add(folder);
             }
         }
         return result;
@@ -58,7 +58,7 @@ public final class FilesListHelper {
     }
 
     static final class PlainReadableFolders {
-        HashSet<File> plainFolders = new HashSet<>();
-        int totalFilesCount = 0;
+        final HashSet<File> mPlainFolders = new HashSet<>();
+        int mTotalFilesCount;
     }
 }

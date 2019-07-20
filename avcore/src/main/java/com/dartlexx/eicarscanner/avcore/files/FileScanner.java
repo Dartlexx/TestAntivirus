@@ -49,7 +49,7 @@ public final class FileScanner {
         listener.onScanProgressChanged(0);
 
         final FilesListHelper.PlainReadableFolders folders = mFilesListHelper.getPlainReadableFolders();
-        if (folders.plainFolders.isEmpty() || folders.totalFilesCount == 0) {
+        if (folders.mPlainFolders.isEmpty() || folders.mTotalFilesCount == 0) {
             return;
         }
 
@@ -59,7 +59,7 @@ public final class FileScanner {
 
         int filesChecked = 0;
         int progress = 0;
-        for (File flatFolder : folders.plainFolders) {
+        for (File flatFolder : folders.mPlainFolders) {
             if (mStopFileScan) {
                 break;
             }
@@ -75,7 +75,7 @@ public final class FileScanner {
                 scanFile(child, signatures, checker);
                 filesChecked++;
 
-                int newProgress = filesChecked * 100 / folders.totalFilesCount;
+                int newProgress = filesChecked * 100 / folders.mTotalFilesCount;
                 if (newProgress != progress) {
                     listener.onScanProgressChanged(newProgress);
                     progress = newProgress;
