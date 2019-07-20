@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">EicarScanner</string>
 
+    <string name="label_can_not_read_files">Storage permission was denied. Can\'t scan files.</string>
+
     <string name="button_title_start_scan">Start full scan</string>
     <string name="button_title_stop_all_scans">Stop all scans</string>
 
