@@ -2,17 +2,26 @@ package com.dartlexx.eicarscanner.common.models;
 
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.util.Objects;
 
 public class FileThreatInfo {
 
     private final long mThreatId;
+    private final String mFileName;
     private final String mFilePath;
 
     public FileThreatInfo(@NonNull Long threatId,
+                          @NonNull String fileName,
                           @NonNull String filePath) {
         mThreatId = threatId;
+        mFileName = fileName;
         mFilePath = filePath;
+    }
+
+    public FileThreatInfo(@NonNull Long threatId,
+                          @NonNull File file) {
+        this(threatId, file.getName(), file.getAbsolutePath());
     }
 
     public long getThreatId() {
@@ -21,6 +30,10 @@ public class FileThreatInfo {
 
     public String getFilePath() {
         return mFilePath;
+    }
+
+    public String getFileName() {
+        return mFileName;
     }
 
     @Override
