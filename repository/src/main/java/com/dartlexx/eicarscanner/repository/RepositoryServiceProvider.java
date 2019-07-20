@@ -3,10 +3,11 @@ package com.dartlexx.eicarscanner.repository;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
+import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundFileThreatRepo;
 import com.dartlexx.eicarscanner.common.storage.AppThreatSignatureStorage;
+import com.dartlexx.eicarscanner.common.storage.FileThreatSignatureStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundAppThreatStorage;
 import com.dartlexx.eicarscanner.common.storage.FoundFileThreatStorage;
 
@@ -16,7 +17,7 @@ public final class RepositoryServiceProvider {
     private FoundThreatRepoImpl mThreatRepo;
 
     @Nullable
-    private AppThreatSignatureRepo mAppSignatureRepo;
+    private ThreatSignatureRepo mThreatSignatureRepo;
 
     @NonNull
     public FoundAppThreatRepo getAppThreatRepo(@NonNull FoundAppThreatStorage appStorage,
@@ -34,10 +35,11 @@ public final class RepositoryServiceProvider {
     }
 
     @NonNull
-    public AppThreatSignatureRepo getAppSignatureRepo(@NonNull AppThreatSignatureStorage storage) {
-        if (mAppSignatureRepo == null) {
-            mAppSignatureRepo = new ThreatSignatureRepoImpl(storage);
+    public ThreatSignatureRepo getThreatSignatureRepo(@NonNull AppThreatSignatureStorage appStorage,
+                                                      @NonNull FileThreatSignatureStorage fileStorage) {
+        if (mThreatSignatureRepo == null) {
+            mThreatSignatureRepo = new ThreatSignatureRepoImpl(appStorage, fileStorage);
         }
-        return mAppSignatureRepo;
+        return mThreatSignatureRepo;
     }
 }
