@@ -12,6 +12,7 @@
     <string name="notification_title_full_scan">Full scan</string>
     <string name="notification_title_partial_scan">Partial scan</string>
     <string name="notification_title_app_threat_found">App threat</string>
+    <string name="notification_title_file_threat_found">File threat</string>
 
     <string name="notification_description_scan_scheduled">Scan is scheduled</string>
     <string name="notification_description_full_scan_executing">Doing full scan of device</string>

@@ -19,6 +19,8 @@ import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
 import com.dartlexx.eicarscanner.di.AppComponent;
 import com.dartlexx.eicarscanner.ui.NotificationHelper;
 
+import java.io.File;
+
 public class ScanService extends Service {
 
     private static final String IS_STOP_SCAN_PARAM = "isStopScan";
@@ -39,6 +41,11 @@ public class ScanService extends Service {
     public static void startSingleAppScan(@NonNull Context context,
                                           @NonNull ApplicationInfo appInfo) {
         startService(context, false, false, null, appInfo);
+    }
+
+    public static void startSingleFileScan(@NonNull Context context,
+                                           @NonNull String filePath) {
+        startService(context, false, false, filePath, null);
     }
 
     private static void startService(@NonNull Context context,
@@ -90,12 +97,13 @@ public class ScanService extends Service {
             avDispatcher.scanInstalledApps(scanListener);
         } else {
             final String fileTarget = intent.getStringExtra(FILE_SCAN_TARGET_PARAM);
-
             if (fileTarget == null) {
                 ApplicationInfo appInfo = intent.getParcelableExtra(APP_SCAN_TARGET_PARAM);
                 if (appInfo != null) {
                     avDispatcher.scanSingleApp(appInfo, scanListener);
                 }
+            } else {
+                avDispatcher.scanSingleFile(new File(fileTarget), scanListener);
             }
         }
 

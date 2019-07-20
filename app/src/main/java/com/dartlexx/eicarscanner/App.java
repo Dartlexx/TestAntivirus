@@ -7,7 +7,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
+import com.dartlexx.eicarscanner.common.models.FileThreatSignature;
+import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 import com.dartlexx.eicarscanner.di.AppComponent;
 import com.dartlexx.eicarscanner.receivers.AppInstalledReceiver;
 
@@ -50,14 +51,21 @@ public final class App extends Application {
     }
 
     private void setupTestSignatures() {
-        final Map<String, AppThreatSignature> signatures = new HashMap<>(2);
-        signatures.put("com.zoner.android.eicar",
+        final Map<String, AppThreatSignature> appSignatures = new HashMap<>(2);
+        appSignatures.put("com.zoner.android.eicar",
                 new AppThreatSignature(1, "com.zoner.android.eicar"));
-        signatures.put("com.fsecure.eicar.antivirus.test",
+        appSignatures.put("com.fsecure.eicar.antivirus.test",
                 new AppThreatSignature(2, "com.fsecure.eicar.antivirus.test"));
 
-        final AppThreatSignatureRepo repo = mAppComponent.getAppThreatSignaturesRepo();
-        repo.updateAppSignatures(signatures);
+        final Map<String, FileThreatSignature> fileSignatures = new HashMap<>(2);
+        fileSignatures.put(".+\\.com", new FileThreatSignature(1, "EICAR",
+                ".+\\.com", "EICAR-STANDARD-ANTIVIRUS-TEST-FILE"));
+        fileSignatures.put(".+\\.tmp", new FileThreatSignature(1, "EICAR",
+                ".+\\.tmp", "EICAR-STANDARD-ANTIVIRUS-TEST-FILE"));
+
+        final ThreatSignatureRepo repo = mAppComponent.getThreatSignaturesRepo();
+        repo.updateAppSignatures(appSignatures);
+        repo.updateFileSignatures(fileSignatures);
     }
 
     private void registerAvReceivers() {
