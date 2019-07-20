@@ -40,6 +40,7 @@ public final class ZipFileHelper {
                     break;
                 }
                 if (entry.isDirectory()) {
+                    entry = input.getNextEntry();
                     continue;
                 }
 

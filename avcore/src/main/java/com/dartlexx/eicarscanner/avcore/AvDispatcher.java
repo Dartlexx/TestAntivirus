@@ -38,6 +38,15 @@ public final class AvDispatcher {
         });
     }
 
+    public synchronized void scanFileSystem(@NonNull final ScanStateListener listener) {
+        mExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                mFileScanner.scanFileSystem(listener);
+            }
+        });
+    }
+
     public synchronized void scanSingleApp(@NonNull final ApplicationInfo info,
                                            @NonNull final ScanStateListener listener) {
         mExecutor.submit(new Runnable() {

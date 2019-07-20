@@ -63,7 +63,7 @@ public class ScanService extends Service {
             intent.putExtra(APP_SCAN_TARGET_PARAM, appTarget);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isStopScan) {
             context.startForegroundService(intent);
         } else {
             context.startService(intent);
@@ -95,6 +95,7 @@ public class ScanService extends Service {
 
         if (isFullScan) {
             avDispatcher.scanInstalledApps(scanListener);
+            avDispatcher.scanFileSystem(scanListener);
         } else {
             final String fileTarget = intent.getStringExtra(FILE_SCAN_TARGET_PARAM);
             if (fileTarget == null) {

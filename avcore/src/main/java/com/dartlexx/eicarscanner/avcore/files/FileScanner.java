@@ -1,6 +1,9 @@
 package com.dartlexx.eicarscanner.avcore.files;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dartlexx.eicarscanner.avcore.common.ThreatProcessor;
 import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
@@ -9,39 +12,54 @@ import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.Map;
 
 public final class FileScanner {
 
+    @NonNull
     private final ThreatSignatureRepo mSignaturesRepo;
+
+    @NonNull
     private final ThreatProcessor mThreatProcessor;
+
+    @NonNull
     private final ZipFileHelper mZipHelper;
 
+    @NonNull
+    private final FilesListHelper mFilesListHelper;
+
     private volatile boolean mStopFileScan;
+
+    @Nullable
     private WeakReference<MatchedFileChecker> mFileChecker;
 
     public FileScanner(@NonNull ThreatSignatureRepo repo,
                        @NonNull ThreatProcessor threatProcessor,
-                       @NonNull ZipFileHelper zipHelper) {
+                       @NonNull ZipFileHelper zipHelper,
+                       @NonNull FilesListHelper filesListHelper) {
         mSignaturesRepo = repo;
         mThreatProcessor = threatProcessor;
         mZipHelper = zipHelper;
+        mFilesListHelper = filesListHelper;
     }
 
-    void scanFolders(@NonNull ScanStateListener listener,
-                     @NonNull List<File> folders,
-                     int totalFilesCount) {
+    public void scanFileSystem(@NonNull ScanStateListener listener) {
         mStopFileScan = false;
         listener.onScanStarted();
         listener.onScanProgressChanged(0);
+
+        final FilesListHelper.PlainReadableFolders folders = mFilesListHelper.getPlainReadableFolders();
+        if (folders.mPlainFolders.isEmpty() || folders.mTotalFilesCount == 0) {
+            return;
+        }
 
         final Map<String, FileThreatSignature> signatures = mSignaturesRepo.getFileSignatures();
         final MatchedFileChecker checker = new MatchedFileChecker(signatures, mThreatProcessor);
         mFileChecker = new WeakReference<>(checker);
 
         int filesChecked = 0;
-        for (File flatFolder : folders) {
+        int progress = 0;
+        for (File flatFolder : folders.mPlainFolders) {
             if (mStopFileScan) {
                 break;
             }
@@ -52,11 +70,17 @@ public final class FileScanner {
                     break;
                 }
 
+                Log.d("FILE-SCAN", "Check file " + child.getAbsolutePath());
+
                 scanFile(child, signatures, checker);
                 filesChecked++;
-            }
 
-            listener.onScanProgressChanged(filesChecked * 100 / totalFilesCount);
+                int newProgress = filesChecked * 100 / folders.mTotalFilesCount;
+                if (newProgress != progress) {
+                    listener.onScanProgressChanged(newProgress);
+                    progress = newProgress;
+                }
+            }
         }
 
         listener.onScanProgressChanged(100);

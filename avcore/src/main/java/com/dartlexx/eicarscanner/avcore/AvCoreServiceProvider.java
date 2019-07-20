@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.dartlexx.eicarscanner.avcore.apps.AppScanner;
 import com.dartlexx.eicarscanner.avcore.common.ThreatProcessor;
 import com.dartlexx.eicarscanner.avcore.files.FileScanner;
+import com.dartlexx.eicarscanner.avcore.files.FilesListHelper;
 import com.dartlexx.eicarscanner.avcore.files.ZipFileHelper;
 import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
@@ -57,7 +58,8 @@ public final class AvCoreServiceProvider {
     private FileScanner getFileScanner(@NonNull ThreatSignatureRepo signatureRepo,
                                        @NonNull ThreatProcessor threatProcessor) {
         if (mFileScanner == null) {
-            mFileScanner = new FileScanner(signatureRepo, threatProcessor, new ZipFileHelper());
+            mFileScanner = new FileScanner(signatureRepo, threatProcessor,
+                    new ZipFileHelper(), new FilesListHelper());
         }
         return mFileScanner;
     }
