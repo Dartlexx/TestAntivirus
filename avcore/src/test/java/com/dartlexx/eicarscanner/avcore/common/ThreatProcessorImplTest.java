@@ -1,9 +1,10 @@
-package com.dartlexx.eicarscanner.avcore;
+package com.dartlexx.eicarscanner.avcore.common;
 
 import com.dartlexx.eicarscanner.common.avcore.ThreatFoundListener;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
 import com.dartlexx.eicarscanner.common.repository.FoundAppThreatRepo;
+import com.dartlexx.eicarscanner.common.repository.FoundFileThreatRepo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,16 +42,17 @@ public class ThreatProcessorImplTest {
                         42));
     }
 
-    private final FoundAppThreatRepo mRepo = mock(FoundAppThreatRepo.class);
+    private final FoundAppThreatRepo mAppRepo = mock(FoundAppThreatRepo.class);
+    private final FoundFileThreatRepo mFileRepo = mock(FoundFileThreatRepo.class);
     private final ThreatFoundListener mUiListener = mock(ThreatFoundListener.class);
-    private final ThreatProcessor mProcessor = new ThreatProcessor(mRepo, mUiListener);
+    private final ThreatProcessor mProcessor = new ThreatProcessor(mAppRepo, mFileRepo, mUiListener);
 
     @Captor
     private ArgumentCaptor<Map<String, AppThreatInfo>> mCaptor;
 
     @Before
     public void setUp() throws Exception {
-        doReturn(EXISTING_THREATS).when(mRepo).getAppThreats();
+        doReturn(EXISTING_THREATS).when(mAppRepo).getAppThreats();
     }
 
     @Test
@@ -61,8 +63,8 @@ public class ThreatProcessorImplTest {
         mProcessor.onAppThreatFound(threat);
 
         verify(mUiListener).onAppThreatFound("EicarVirus-2", "eicar.virus");
-        verify(mRepo).getAppThreats();
-        verify(mRepo, never()).updateAppThreats(ArgumentMatchers.<String, AppThreatInfo>anyMap());
+        verify(mAppRepo).getAppThreats();
+        verify(mAppRepo, never()).updateAppThreats(ArgumentMatchers.<String, AppThreatInfo>anyMap());
     }
 
     @Test
@@ -73,8 +75,8 @@ public class ThreatProcessorImplTest {
         mProcessor.onAppThreatFound(threat);
 
         verify(mUiListener).onAppThreatFound("New threat", "new.threat");
-        verify(mRepo).getAppThreats();
-        verify(mRepo).updateAppThreats(mCaptor.capture());
+        verify(mAppRepo).getAppThreats();
+        verify(mAppRepo).updateAppThreats(mCaptor.capture());
 
         Map<String, AppThreatInfo> updated = mCaptor.getValue();
         assertEquals(3, updated.size());

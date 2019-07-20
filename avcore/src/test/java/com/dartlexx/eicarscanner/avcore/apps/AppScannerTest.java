@@ -1,13 +1,14 @@
-package com.dartlexx.eicarscanner.avcore;
+package com.dartlexx.eicarscanner.avcore.apps;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.dartlexx.eicarscanner.avcore.common.ThreatProcessor;
 import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
+import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class AppScannerTest {
     }
 
     private final ThreatProcessor mProcessor = mock(ThreatProcessor.class);
-    private final AppThreatSignatureRepo mRepo = mock(AppThreatSignatureRepo.class);
+    private final ThreatSignatureRepo mRepo = mock(ThreatSignatureRepo.class);
     private final PackageManager mPackMan = mock(PackageManager.class);
     private final ScanStateListener mListener = mock(ScanStateListener.class);
     private AppScanner mAppScanner;

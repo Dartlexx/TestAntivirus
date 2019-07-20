@@ -1,4 +1,4 @@
-package com.dartlexx.eicarscanner.avcore;
+package com.dartlexx.eicarscanner.avcore.apps;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -7,15 +7,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.dartlexx.eicarscanner.avcore.common.ThreatProcessor;
 import com.dartlexx.eicarscanner.common.avcore.ScanStateListener;
 import com.dartlexx.eicarscanner.common.models.AppThreatInfo;
 import com.dartlexx.eicarscanner.common.models.AppThreatSignature;
-import com.dartlexx.eicarscanner.common.repository.AppThreatSignatureRepo;
+import com.dartlexx.eicarscanner.common.repository.ThreatSignatureRepo;
 
 import java.util.List;
 import java.util.Map;
 
-final class AppScanner {
+public final class AppScanner {
 
     private static final String TAG = AppScanner.class.getSimpleName();
     private static final int GET_INSTALLED_APPS_FLAGS = 0;
@@ -25,22 +26,22 @@ final class AppScanner {
     private final PackageManager mPackageMan;
 
     @NonNull
-    private final AppThreatSignatureRepo mSignatureRepo;
+    private final ThreatSignatureRepo mSignatureRepo;
 
     @NonNull
     private final ThreatProcessor mProcessor;
 
     private volatile boolean mStopAppScan;
 
-    AppScanner(@NonNull PackageManager packageManager,
-               @NonNull AppThreatSignatureRepo repo,
-               @NonNull ThreatProcessor processor) {
+    public AppScanner(@NonNull PackageManager packageManager,
+                      @NonNull ThreatSignatureRepo repo,
+                      @NonNull ThreatProcessor processor) {
         mPackageMan = packageManager;
         mSignatureRepo = repo;
         mProcessor = processor;
     }
 
-    void scanInstalledApps(@NonNull ScanStateListener listener) {
+    public void scanInstalledApps(@NonNull ScanStateListener listener) {
         mStopAppScan = false;
 
         listener.onScanStarted();
@@ -72,8 +73,8 @@ final class AppScanner {
         listener.onScanFinished();
     }
 
-    void checkNewOrUpdatedApp(@NonNull ApplicationInfo app,
-                              @NonNull ScanStateListener listener) {
+    public void checkNewOrUpdatedApp(@NonNull ApplicationInfo app,
+                                     @NonNull ScanStateListener listener) {
         mStopAppScan = false;
         listener.onScanStarted();
         listener.onScanProgressChanged(0);
@@ -93,11 +94,11 @@ final class AppScanner {
         listener.onScanFinished();
     }
 
-    void stopScan() {
+    public void stopScan() {
         mStopAppScan = true;
     }
 
-    void checkRemovedApp(@NonNull String packageName) {
+    public void checkRemovedApp(@NonNull String packageName) {
         mProcessor.onAppDeleted(packageName);
     }
 
