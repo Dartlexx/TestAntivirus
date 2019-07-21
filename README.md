@@ -9,4 +9,6 @@ Test task to detect EICAR virus apps
 * Of cause work with threat signatures must me heavily optimized in real AntiVirus, so that search would be as fast as possible. But in this test app I skipped that part.
 * Though I made storage of found threats, that was done just for demonstartion purposes. For simplicity, I never implemented synchronization of previously and newly found threats, also data can come from overllapping full and partial scans. That is a huge task by itself, as several different threats may provide info about threats. I have implemented such syncronization when I worked at previous company.
 * The way I implemented file scanning is oversimplified, but it's a test task after all :))
-* Ofcause, there are things to improve in architecture and test coverage.
+* Of course, there are lots of things to improve in architecture and test coverage. But this task was really big so I tried to save time on this tech debt. In normal case, I would have covered by unit tests all classes outside of 'app' module.
+
+* The task about saving a secret string: in my opinion the best case is when the secret is not stored in the APK at all. If secret is stored on server that should be better. Besides, it's much better to have different secrets for each user, instead of common secret for all app installations.
