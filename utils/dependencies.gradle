@@ -3,6 +3,7 @@ ext {
             appCompat                : '1.0.2',  // https://developer.android.com/jetpack/androidx/releases/appcompat
             annotations              : '1.1.0',  // https://developer.android.com/jetpack/androidx/releases/annotation
             constraint               : '1.1.3',  // https://dl.google.com/dl/android/maven2/com/android/support/constraint/group-index.xml
+            material                 : '1.0.0',
 
             gson                     : '2.8.5', // https://github.com/google/gson
 
@@ -19,6 +20,7 @@ ext {
             appCompat                : "androidx.appcompat:appcompat:${versions.appCompat}",
             annotations              : "androidx.annotation:annotation:${versions.annotations}",
             constraintLayout         : "androidx.constraintlayout:constraintlayout:${versions.constraint}",
+            material                 : "com.google.android.material:material:${versions.material}",
 
             gson                     : "com.google.code.gson:gson:${versions.gson}",
     ]
@@ -53,6 +55,7 @@ ext {
             [configuration: impl, dependency: libs.annotations],
             [configuration: impl, dependency: libs.appCompat],
             [configuration: impl, dependency: libs.constraintLayout],
+            [configuration: impl, dependency: libs.material],
 
             [configuration: testImpl, dependency: testLibs.junit],
             [configuration: testImpl, dependency: testLibs.mockito],

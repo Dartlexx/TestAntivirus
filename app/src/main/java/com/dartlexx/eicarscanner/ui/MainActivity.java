@@ -2,14 +2,17 @@ package com.dartlexx.eicarscanner.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dartlexx.eicarscanner.R;
+import com.dartlexx.eicarscanner.misc.MiscHelper;
 import com.dartlexx.eicarscanner.service.ScanService;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mLabel.setVisibility(View.INVISIBLE);
         }
+
+        Drawable image = MiscHelper.getAppShieldIcon(getApplicationContext());
+        ((ImageView) findViewById(R.id.appShieldImage)).setImageDrawable(image);
+
+        findViewById(R.id.showSecretButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MiscHelper.showDialogWithInfo(MainActivity.this);
+            }
+        });
     }
 
     @Override
