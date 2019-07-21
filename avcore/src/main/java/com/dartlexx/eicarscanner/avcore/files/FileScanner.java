@@ -16,6 +16,8 @@ import java.util.Map;
 
 public final class FileScanner {
 
+    private static final String TAG = FileScanner.class.getSimpleName();
+
     @NonNull
     private final ThreatSignatureRepo mSignaturesRepo;
 
@@ -50,6 +52,8 @@ public final class FileScanner {
 
         final FilesListHelper.PlainReadableFolders folders = mFilesListHelper.getPlainReadableFolders();
         if (folders.mPlainFolders.isEmpty() || folders.mTotalFilesCount == 0) {
+            listener.onScanProgressChanged(100);
+            listener.onScanFinished();
             return;
         }
 
@@ -70,7 +74,7 @@ public final class FileScanner {
                     break;
                 }
 
-                Log.d("FILE-SCAN", "Check file " + child.getAbsolutePath());
+                Log.d(TAG, "Start check of file " + child.getAbsolutePath());
 
                 scanFile(child, signatures, checker);
                 filesChecked++;
